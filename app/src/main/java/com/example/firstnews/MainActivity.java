@@ -12,19 +12,28 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+
+import org.w3c.dom.Text;
+
+import java.io.IOException;
+import java.util.List;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -33,23 +42,29 @@ public class MainActivity extends AppCompatActivity {
     final int LOCATION_PERMISSION_REQUEST = 1;
     TextView textView;
     FusedLocationProviderClient client;
+    Geocoder geocoder;
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        textView = (TextView) findViewById(R.id.placeHolder);
+        geocoder = new Geocoder(this);
+
         if(Build.VERSION.SDK_INT>=23){
             int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
             if(hasLocationPermission != getPackageManager().PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             }
-            else
+            else {
                 startLocation();
+            }
         }
-        else
+        else {
             startLocation();
-
+        }
 
         ViewPager weatherPager = findViewById(R.id.weather_pager);
         DayAdapter adapter = new DayAdapter(getSupportFragmentManager());
@@ -65,10 +80,32 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 Location lastlocation  = locationResult.getLastLocation();
-                textView.setText(String.valueOf(lastlocation.getLongitude())+" , "+lastlocation.getLatitude());
-
+                final double lati = lastlocation.getLatitude();
+                final double longi = lastlocation.getLongitude();
+                //textView.setText(lastlocation.getLongitude()+" , "+lastlocation.getLatitude());
+                new Thread(){
+                    @Override
+                    public void run() {
+                        super.run();
+                        try {
+                            List<Address> address = geocoder.getFromLocation(lati, longi, 1);
+                            final Address bestAddress = address.get(0);
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    textView.setText(bestAddress.getCountryName() +", "+bestAddress.getFeatureName());
+                                }
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
             }
         };
+        LocationRequest request = LocationRequest.create();
+        request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        client.requestLocationUpdates(request, callback, null);
     }
 
     private class DayAdapter extends FragmentStatePagerAdapter {
