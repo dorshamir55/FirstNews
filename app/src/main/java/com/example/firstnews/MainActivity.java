@@ -40,6 +40,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class MainActivity extends AppCompatActivity {
 
     final int LOCATION_PERMISSION_REQUEST = 1;
+    final String LINK = "http://api.openweathermap.org/data/2.5/forecast?appid=2f976482fabfb93ba421d2df01470e6c";
     TextView textView;
     FusedLocationProviderClient client;
     Geocoder geocoder;
@@ -80,20 +81,21 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 Location lastlocation  = locationResult.getLastLocation();
-                final double lati = lastlocation.getLatitude();
-                final double longi = lastlocation.getLongitude();
+                final double lat = lastlocation.getLatitude();
+                final double lon = lastlocation.getLongitude();
                 //textView.setText(lastlocation.getLongitude()+" , "+lastlocation.getLatitude());
                 new Thread(){
                     @Override
                     public void run() {
                         super.run();
                         try {
-                            List<Address> address = geocoder.getFromLocation(lati, longi, 1);
+                            List<Address> address = geocoder.getFromLocation(lat, lon, 1);
                             final Address bestAddress = address.get(0);
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    textView.setText(bestAddress.getCountryName() +", "+bestAddress.getFeatureName());
+                                    textView.setText(lat+", "+lon);
+                                    //textView.setText(bestAddress.getCountryName() +", "+bestAddress.getFeatureName());
                                 }
                             });
                         } catch (IOException e) {
