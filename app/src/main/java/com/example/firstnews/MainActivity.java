@@ -1,28 +1,31 @@
 package com.example.firstnews;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -30,12 +33,11 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
-import org.w3c.dom.Text;
-
+import java.io.FileDescriptor;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
-
-import static android.widget.Toast.LENGTH_SHORT;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     FusedLocationProviderClient client;
     Geocoder geocoder;
     Handler handler = new Handler();
+    List<Weather> weatherList = new ArrayList<Weather>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,10 +69,12 @@ public class MainActivity extends AppCompatActivity {
         else {
             startLocation();
         }
-
-        ViewPager weatherPager = findViewById(R.id.weather_pager);
-        DayAdapter adapter = new DayAdapter(getSupportFragmentManager());
-        weatherPager.setAdapter(adapter);
+        WeatherFragment weatherFragment = WeatherFragment.newInstance(weatherList);
+        FragmentManager fragmentManager = getFragmentManager().beginTransaction()
+                .add(R.id.main, weatherFragment, "weather_fragment").commit();
+        //RecyclerView recyclerView = findViewById(R.id.weather_recycler);
+        //WeatherAdapter adapter = new WeatherAdapter(weatherList);
+        //recyclerView.setAdapter(adapter);
 
 
     }
@@ -110,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         client.requestLocationUpdates(request, callback, null);
     }
 
-    private class DayAdapter extends FragmentStatePagerAdapter {
+    /*private class DayAdapter extends FragmentStatePagerAdapter {
 
         public DayAdapter(FragmentManager fm) {
             super(fm);
@@ -118,14 +123,14 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return DayFragment.newInstance(position);
+            return WeatherFragment.newInstance(position);
         }
 
         @Override
         public int getCount() {
             return Day.values().length;
         }
-    }
+    }*/
 
 
     @Override
