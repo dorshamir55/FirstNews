@@ -14,11 +14,13 @@ public class ApiUtil {
 
     public static Api getRetrofitApi(){
         Gson gson = new GsonBuilder()
-                .registerTypeAdapter(new ArrayList<Weather>().getClass(), new WeatherJsonDeserializer())
+                .registerTypeAdapter((new ArrayList<Weather>()).getClass(), new WeatherJsonDeserializer())
                 .create();
 
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson)).build();
+        Retrofit retrofit = new Retrofit
+                .Builder().baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
         Api api = retrofit.create(Api.class);
         return api;
     }

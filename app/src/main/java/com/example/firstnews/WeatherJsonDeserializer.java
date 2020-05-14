@@ -27,7 +27,8 @@ public class WeatherJsonDeserializer implements JsonDeserializer {
             Log.d(TAGAIM, city);
             weathers = new ArrayList<>(jsonArray_list.size());
             for(int i=0; i<jsonArray_list.size();i++){
-                Weather dematerialized = context.deserialize(jsonArray_list.get(i), Weather.class);
+                //Weather dematerialized = context.deserialize(jsonArray_list.get(i), Weather.class);
+                Weather dematerialized = new Weather()
                 weathers.add(dematerialized);
             }
         }catch(JsonParseException jpe){

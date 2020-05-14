@@ -77,9 +77,9 @@ public class WeatherFragment extends android.app.Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
-        WeatherViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(WeatherViewModel.class);
+        WeatherViewModel viewModel = ViewModelProviders.of((FragmentActivity) root.getContext()).get(WeatherViewModel.class);
                 //ViewModelProviders.of(WeatherFragment.this).get(WeatherViewModel.class);
-        viewModel.getWeatherList().observe((LifecycleOwner) context, new Observer<List<Weather>>() {
+        viewModel.getWeatherList().observe((LifecycleOwner) root.getContext(), new Observer<List<Weather>>() {
             @Override
             public void onChanged(List<Weather> weatherList) {
                 WeatherAdapter adapter = new WeatherAdapter(context, weatherList);

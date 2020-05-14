@@ -9,15 +9,15 @@ import com.google.gson.annotations.SerializedName;
 public class Weather {
 
     String day;
-    @SerializedName("dt_txt")
+    @SerializedName(value="dt_txt")
     String date;
-    @SerializedName("dt_txt")
+    @SerializedName(value="dt_txt")
     String time;
-    @SerializedName("temp")
+    @SerializedName(value="temp")
     Double celsius;
-    @SerializedName("temp")
+    @SerializedName(value="temp")
     Double fahrenheit;
-    @SerializedName("icon")
+    @SerializedName(value="icon")
     String image;
 
     public Weather(String day, String date, String time, Double celsius, Double fahrenheit, String image) {

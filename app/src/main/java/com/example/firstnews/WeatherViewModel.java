@@ -1,5 +1,6 @@
 package com.example.firstnews;
 
+import android.app.Application;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -8,6 +9,8 @@ import android.os.Handler;
 import android.view.ViewDebug;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -26,7 +29,7 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class WeatherViewModel extends ViewModel {
+public class WeatherViewModel extends AndroidViewModel {
     private MutableLiveData<List<Weather>> weatherList;
 
     final int LOCATION_PERMISSION_REQUEST = 1;
@@ -36,6 +39,10 @@ public class WeatherViewModel extends ViewModel {
     private Double lat;
     private Double lon;
     Context context;
+
+    public WeatherViewModel(@NonNull Application application) {
+        super(application);
+    }
 
     public LiveData<List<Weather>> getWeatherList() {
         if(weatherList==null){
@@ -47,14 +54,13 @@ public class WeatherViewModel extends ViewModel {
 
     private void loadWeathers(){
         Api api = ApiUtil.getRetrofitApi();
-
+        getLatiAndLongi();
         Call<List<Weather>> call = api.getWeather(lat, lon);
 
         call.enqueue(new Callback<List<Weather>>() {
             @Override
             public void onResponse(Response<List<Weather>> response, Retrofit retrofit) {
                 weatherList.setValue(response.body());
-
             }
 
             @Override
@@ -64,8 +70,8 @@ public class WeatherViewModel extends ViewModel {
         });
     }
 
-    public void startLocation(){
-        client = LocationServices.getFusedLocationProviderClient(context);
+    public void getLatiAndLongi(){
+        client = LocationServices.getFusedLocationProviderClient(getApplication().getBaseContext());
         LocationCallback callback = new LocationCallback(){
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -74,11 +80,12 @@ public class WeatherViewModel extends ViewModel {
                 lat = lastlocation.getLatitude();
                 lon = lastlocation.getLongitude();
                 //textView.setText(lastlocation.getLongitude()+" , "+lastlocation.getLatitude());
-                new Thread(){
+                /*new Thread(){
                     @Override
                     public void run() {
                         super.run();
                         try {
+                            geocoder = new Geocoder(getApplication().getApplicationContext());
                             List<Address> address = geocoder.getFromLocation(lat, lon, 1);
                             final Address bestAddress = address.get(0);
                             handler.post(new Runnable() {
@@ -92,7 +99,7 @@ public class WeatherViewModel extends ViewModel {
                             e.printStackTrace();
                         }
                     }
-                }.start();
+                }.start();*/
             }
         };
         LocationRequest request = LocationRequest.create();
