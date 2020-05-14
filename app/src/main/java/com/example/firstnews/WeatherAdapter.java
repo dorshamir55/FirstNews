@@ -1,5 +1,6 @@
 package com.example.firstnews;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,12 @@ import java.util.List;
 
 public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder> {
     private List<Weather> weatherList;
+    Context context;
+    String IMG="";
 
-    public WeatherAdapter(List<Weather> weatherList) {
+    public WeatherAdapter(Context context, List<Weather> weatherList) {
         this.weatherList = weatherList;
+        this.context=context;
     }
 
     static class WeatherViewHolder extends RecyclerView.ViewHolder{
@@ -51,8 +55,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         Weather weather = weatherList.get(position);
         holder.timeTv.setText(weather.getTime());
         Picasso.get().load(weather.getImage()).resize(300,200).into(holder.imageTv);
-        holder.celsiusTv.setText(weather.getCelsius().toString());
-        holder.fahrenheitTv.setText(weather.getFahrenheit().toString());
+        holder.celsiusTv.setText(String.valueOf(weather.getCelsius()-272.15)+"\u2103");
+        holder.fahrenheitTv.setText(String.valueOf((weather.getFahrenheit()-272.15)*1.8+32.0)+"\u2109");
         holder.dateTv.setText(weather.getDate());
         holder.dayTv.setText(weather.getDay());
     }

@@ -1,21 +1,29 @@
 package com.example.firstnews;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
-public class WeatherFragment extends Fragment {
+public class WeatherFragment extends android.app.Fragment {
 
     /*public static WeatherFragment newInstance (int num){
         WeatherFragment weatherFragment = new WeatherFragment();
@@ -26,8 +34,9 @@ public class WeatherFragment extends Fragment {
     }*/
 
     private static List<Weather> weatherList;
+    Context context;
 
-    public static WeatherFragment newInstance(List<Weather> i_weatherList){
+    static WeatherFragment newInstance(List<Weather> i_weatherList){
         WeatherFragment weatherFragment = new WeatherFragment();
         weatherList=i_weatherList;
         return weatherFragment;
@@ -64,16 +73,26 @@ public class WeatherFragment extends Fragment {
         }*/
 
         View root = inflater.inflate(R.layout.weather_fragment, container, false);
-        RecyclerView recyclerView = root.findViewById(R.id.weather_recycler);
+        final RecyclerView recyclerView = root.findViewById(R.id.weather_recycler);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
+        WeatherViewModel viewModel = ViewModelProviders.of((FragmentActivity) context).get(WeatherViewModel.class);
+                //ViewModelProviders.of(WeatherFragment.this).get(WeatherViewModel.class);
+        viewModel.getWeatherList().observe((LifecycleOwner) context, new Observer<List<Weather>>() {
+            @Override
+            public void onChanged(List<Weather> weatherList) {
+                WeatherAdapter adapter = new WeatherAdapter(context, weatherList);
+                recyclerView.setAdapter(adapter);
+            }
+        });
 
-        weatherList = new ArrayList<Weather>();
-        String imageUri = "drawable://" + R.drawable.ic_launcher_background;
-        weatherList.add(new Weather("א'", "14.5", "3:00", "25", "45", imageUri));
+        //weatherList = new ArrayList<Weather>();
+        //String imageUri = "drawable://" + R.drawable.ic_launcher_background;
+        //weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));
 
-        WeatherAdapter weatheradapter = new WeatherAdapter(weatherList);
-        recyclerView.setAdapter(weatheradapter);
+        //WeatherAdapter weatheradapter = new WeatherAdapter(weatherList);
+        //recyclerView.setAdapter(weatheradapter);
         return root;
     }
 }

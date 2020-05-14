@@ -4,15 +4,23 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Weather {
+
     String day;
+    @SerializedName("dt_txt")
     String date;
+    @SerializedName("dt_txt")
     String time;
-    String celsius;
-    String fahrenheit;
+    @SerializedName("temp")
+    Double celsius;
+    @SerializedName("temp")
+    Double fahrenheit;
+    @SerializedName("icon")
     String image;
 
-    public Weather(String day, String date, String time, String celsius, String fahrenheit, String image) {
+    public Weather(String day, String date, String time, Double celsius, Double fahrenheit, String image) {
         this.day = day;
         this.date = date;
         this.time = time;
@@ -51,19 +59,19 @@ public class Weather {
         this.time = time;
     }
 
-    public String getCelsius() {
+    public Double getCelsius() {
         return celsius;
     }
 
-    public void setCelsius(String celsius) {
+    public void setCelsius(Double celsius) {
         this.celsius = celsius;
     }
 
-    public String getFahrenheit() {
+    public Double getFahrenheit() {
         return fahrenheit;
     }
 
-    public void setFahrenheit(String fahrenheit) {
+    public void setFahrenheit(Double fahrenheit) {
         this.fahrenheit = fahrenheit;
     }
 
