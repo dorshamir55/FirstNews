@@ -7,74 +7,80 @@
     app:contentPadding="10dp"
     android:elevation="8dp"
     app:cardCornerRadius="10dp">
-
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="30dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/weather_title"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="@string/weather_title"
-        android:layout_marginBottom="20dp"/>
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/time_tv"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="@string/weather_title"
-        android:layout_marginBottom="20dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/time_tv"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            android:layout_marginVertical="5dp"
+            android:text="@string/weather_title"/>
 
-    <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/image_tv"
-        android:background="@mipmap/ic_launcher"/>
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_gravity="center"
+            android:id="@+id/image_tv"
+            android:layout_marginVertical="5dp"
+            android:background="@mipmap/ic_launcher"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/celsius_tv"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="@string/weather_title"
-        android:layout_marginBottom="20dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_marginVertical="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/celsius_tv"
+                android:textSize="8sp"
+                android:textStyle="bold"
+                android:text="@string/weather_title"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/fahrenheit_tv"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="@string/weather_title"
-        android:layout_marginBottom="20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text=" "/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/date_tv"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="@string/weather_title"
-        android:layout_marginBottom="20dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/fahrenheit_tv"
+                android:textSize="8sp"
+                android:textStyle="bold"
+                android:text="@string/weather_title"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/day_tv"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            android:layout_marginVertical="5dp"
+            android:text="@string/weather_title"/>
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:id="@+id/day_tv"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="@string/weather_title"
-        android:layout_marginBottom="20dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/date_tv"
+            android:textSize="8sp"
+            android:textStyle="bold"
+            android:layout_marginVertical="5dp"
+            android:text="@string/weather_title"/>
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>
