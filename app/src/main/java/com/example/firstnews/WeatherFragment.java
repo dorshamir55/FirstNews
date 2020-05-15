@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+
+import static android.widget.Toast.LENGTH_SHORT;
 
 public class WeatherFragment extends android.app.Fragment {
 
@@ -75,11 +78,10 @@ public class WeatherFragment extends android.app.Fragment {
         View root = inflater.inflate(R.layout.weather_fragment, container, false);
         final RecyclerView recyclerView = root.findViewById(R.id.weather_recycler);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+        recyclerView.setLayoutManager(new LinearLayoutManager(context,
                 LinearLayoutManager.HORIZONTAL, false));
-        WeatherViewModel viewModel = ViewModelProviders.of((FragmentActivity) root.getContext()).get(WeatherViewModel.class);
-                //ViewModelProviders.of(WeatherFragment.this).get(WeatherViewModel.class);
-        viewModel.getWeatherList().observe((LifecycleOwner) root.getContext(), new Observer<List<Weather>>() {
+        WeatherViewModel viewModel = ViewModelProviders.of((FragmentActivity) getActivity()).get(WeatherViewModel.class);
+        viewModel.getWeatherList().observe((LifecycleOwner) getActivity(), new Observer<List<Weather>>() {
             @Override
             public void onChanged(List<Weather> weatherList) {
                 WeatherAdapter adapter = new WeatherAdapter(context, weatherList);

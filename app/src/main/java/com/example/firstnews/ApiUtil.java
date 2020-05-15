@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import java.util.ArrayList;
 
 import retrofit.GsonConverterFactory;
+import retrofit.*;
 import retrofit.Retrofit;
 
 public class ApiUtil {
