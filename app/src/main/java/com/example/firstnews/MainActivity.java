@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         //WeatherAdapter adapter = new WeatherAdapter(weatherList);
         //recyclerView.setAdapter(adapter);
 
-
+s
     }
 
     public void startLocation(){
