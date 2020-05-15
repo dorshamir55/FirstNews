@@ -69,9 +69,8 @@ public class MainActivity extends AppCompatActivity {
         else {
             startLocation();
         }
-        WeatherFragment weatherFragment = WeatherFragment.newInstance(weatherList);
-        FragmentManager fragmentManager = getFragmentManager().beginTransaction()
-                .add(R.id.main, weatherFragment, "weather_fragment").commit();
+        getFragmentManager().beginTransaction()
+                .add(R.id.root_container, WeatherFragment.newInstance(weatherList), "weather_fragment").commit();
         //RecyclerView recyclerView = findViewById(R.id.weather_recycler);
         //WeatherAdapter adapter = new WeatherAdapter(weatherList);
         //recyclerView.setAdapter(adapter);

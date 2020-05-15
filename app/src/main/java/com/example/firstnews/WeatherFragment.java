@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeatherFragment extends Fragment {
+public class WeatherFragment extends android.app.Fragment {
 
     /*public static WeatherFragment newInstance (int num){
         WeatherFragment weatherFragment = new WeatherFragment();
