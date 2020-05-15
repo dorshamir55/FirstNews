@@ -4,25 +4,29 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
-public class Weather {
-    String day;
-    String date;
-    String time;
-    String celsius;
-    String fahrenheit;
-    String image;
+import com.google.gson.annotations.SerializedName;
 
-    public Weather(String day, String date, String time, String celsius, String fahrenheit, String image) {
-        this.day = day;
+public class Weather {
+
+    //String day;
+    @SerializedName(value="dt_txt")
+    String date;
+    @SerializedName(value="dt_txt")
+    String time;
+    /*@SerializedName(value="temp")
+    Double celsius;
+    @SerializedName(value="temp")
+    Double fahrenheit;
+    //@SerializedName(value="icon")
+    //String image;*/
+
+    public Weather(/*String day, */String date, String time/*, Double celsius, Double fahrenheit*//*, String image*/) {
+        //this.day = day;
         this.date = date;
         this.time = time;
-        this.celsius = celsius;
-        this.fahrenheit = fahrenheit;
-        this.image = image;
-    }
-
-    public String getDay() {
-        return day;
+        /*this.celsius = celsius;
+        this.fahrenheit = fahrenheit;*/
+        //this.image = image;
     }
 
     @NonNull
@@ -31,9 +35,14 @@ public class Weather {
         return super.toString();
     }
 
-    public void setDay(String day) {
+    /*public String getDay() {
+        return day;
+    }*/
+
+
+    /*public void setDay(String day) {
         this.day = day;
-    }
+    }*/
 
     public String getDate() {
         return date;
@@ -51,27 +60,28 @@ public class Weather {
         this.time = time;
     }
 
-    public String getCelsius() {
+    /*public Double getCelsius() {
         return celsius;
     }
 
-    public void setCelsius(String celsius) {
+    public void setCelsius(Double celsius) {
         this.celsius = celsius;
     }
 
-    public String getFahrenheit() {
+    public Double getFahrenheit() {
         return fahrenheit;
     }
 
-    public void setFahrenheit(String fahrenheit) {
+    public void setFahrenheit(Double fahrenheit) {
         this.fahrenheit = fahrenheit;
-    }
+    }*/
 
+    /*
     public String getImage() {
         return image;
     }
 
     public void setImage(String image) {
         this.image = image;
-    }
+    }*/
 }
