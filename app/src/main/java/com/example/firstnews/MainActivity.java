@@ -4,6 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -36,10 +42,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     final int LOCATION_PERMISSION_REQUEST = 1;
-    /*TextView textView;
+    final String LINK = "http://api.openweathermap.org/data/2.5/forecast?appid=2f976482fabfb93ba421d2df01470e6c";
+    TextView textView;
     FusedLocationProviderClient client;
     Geocoder geocoder;
-    Handler handler = new Handler();*/
+    Handler handler = new Handler();
     List<Weather> weatherList = new ArrayList<Weather>();
 
     @Override
@@ -47,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //textView = (TextView) findViewById(R.id.placeHolder);
-        //geocoder = new Geocoder(this);
+        textView = (TextView) findViewById(R.id.placeHolder);
+        geocoder = new Geocoder(this);
 
         if(Build.VERSION.SDK_INT>=23){
             int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -56,26 +63,22 @@ public class MainActivity extends AppCompatActivity {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             }
             else {
-                //startLocation();
+                startLocation();
             }
         }
         else {
-            //startLocation();
+            startLocation();
         }
-
-        //String imageUri = "drawable://" + R.drawable.ic_launcher_background;
-        //weatherList.add(new Weather("א'", "14.5", "3:00", "25", "45", imageUri));
-
-        //WeatherFragment weatherFragment = WeatherFragment.newInstance(weatherList);
-        getFragmentManager().beginTransaction().add(R.id.root_container, WeatherFragment.newInstance(weatherList), "weather_fragment").commit();
+        getFragmentManager().beginTransaction()
+                .add(R.id.root_container, WeatherFragment.newInstance(weatherList), "weather_fragment").commit();
         //RecyclerView recyclerView = findViewById(R.id.weather_recycler);
         //WeatherAdapter adapter = new WeatherAdapter(weatherList);
         //recyclerView.setAdapter(adapter);
 
-s
+
     }
 
-    /*public void startLocation(){
+    public void startLocation(){
         client = LocationServices.getFusedLocationProviderClient(this);
         LocationCallback callback = new LocationCallback(){
             @Override
@@ -109,7 +112,7 @@ s
         LocationRequest request = LocationRequest.create();
         request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         client.requestLocationUpdates(request, callback, null);
-    }*/
+    }
 
     /*private class DayAdapter extends FragmentStatePagerAdapter {
 
@@ -137,14 +140,14 @@ s
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 builder.setTitle(R.string.error).setMessage(R.string.permission_msg)
                         .setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        intent.setData(Uri.parse("package:"+getPackageName()));
-                        startActivity(intent);
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                intent.setData(Uri.parse("package:"+getPackageName()));
+                                startActivity(intent);
 
-                    }
-                })
+                            }
+                        })
                         .setNegativeButton(R.string.quit, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -152,9 +155,8 @@ s
                             }
                         }).setCancelable(false).show();
             }
-            else {
-                //startLocation();
-            }
+            else
+                startLocation();
         }
     }
 }

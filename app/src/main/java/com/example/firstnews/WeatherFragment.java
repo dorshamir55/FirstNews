@@ -70,7 +70,7 @@ public class WeatherFragment extends android.app.Fragment {
 
         weatherList = new ArrayList<Weather>();
         String imageUri = "drawable://" + R.drawable.ic_launcher_background;
-        weatherList.add(new Weather("א'", "14.5", "3:00", "25", "45", imageUri));
+        weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));
 
         WeatherAdapter weatheradapter = new WeatherAdapter(weatherList);
         recyclerView.setAdapter(weatheradapter);

@@ -8,25 +8,25 @@ import com.google.gson.annotations.SerializedName;
 
 public class Weather {
 
-    //String day;
-    @SerializedName(value="dt_txt")
+    String day;
+    //@SerializedName(value="dt_txt")
     String date;
-    @SerializedName(value="dt_txt")
+    //@SerializedName(value="dt_txt")
     String time;
-    /*@SerializedName(value="temp")
+    //@SerializedName(value="temp")
     Double celsius;
-    @SerializedName(value="temp")
+    //@SerializedName(value="temp")
     Double fahrenheit;
     //@SerializedName(value="icon")
-    //String image;*/
+    String image;
 
-    public Weather(/*String day, */String date, String time/*, Double celsius, Double fahrenheit*//*, String image*/) {
-        //this.day = day;
+    public Weather(String day, String date, String time, Double celsius, Double fahrenheit, String image) {
+        this.day = day;
         this.date = date;
         this.time = time;
-        /*this.celsius = celsius;
-        this.fahrenheit = fahrenheit;*/
-        //this.image = image;
+        this.celsius = celsius;
+        this.fahrenheit = fahrenheit;
+        this.image = image;
     }
 
     @NonNull
@@ -35,14 +35,14 @@ public class Weather {
         return super.toString();
     }
 
-    /*public String getDay() {
+    public String getDay() {
         return day;
-    }*/
+    }
 
 
-    /*public void setDay(String day) {
+    public void setDay(String day) {
         this.day = day;
-    }*/
+    }
 
     public String getDate() {
         return date;
@@ -60,7 +60,7 @@ public class Weather {
         this.time = time;
     }
 
-    /*public Double getCelsius() {
+    public Double getCelsius() {
         return celsius;
     }
 
@@ -74,14 +74,13 @@ public class Weather {
 
     public void setFahrenheit(Double fahrenheit) {
         this.fahrenheit = fahrenheit;
-    }*/
+    }
 
-    /*
     public String getImage() {
         return image;
     }
 
     public void setImage(String image) {
         this.image = image;
-    }*/
+    }
 }
