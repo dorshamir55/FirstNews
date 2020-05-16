@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WeatherFragment extends android.app.Fragment {
+    private List<Weather> weatherList;
 
     /*public static WeatherFragment newInstance (int num){
         WeatherFragment weatherFragment = new WeatherFragment();
@@ -29,8 +30,6 @@ public class WeatherFragment extends android.app.Fragment {
         final WeatherManager manager = WeatherManager.getInstance(getActivity().getApplicationContext());
         weatherList = manager.getWeatherList();
     }
-
-    private List<Weather> weatherList;
 
     /*public static WeatherFragment newInstance(List<Weather> i_weatherList){
         WeatherFragment weatherFragment = new WeatherFragment();
