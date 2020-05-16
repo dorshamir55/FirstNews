@@ -44,16 +44,10 @@ public class MainActivity extends AppCompatActivity {
     final int LOCATION_PERMISSION_REQUEST = 1;
 
     //List<Weather> weatherList = new ArrayList<Weather>();
-    WeatherManager manager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        manager = new WeatherManager(this);
-
-        //textView = (TextView) findViewById(R.id.placeHolder);
-        //geocoder = new Geocoder(this);
 
         if(Build.VERSION.SDK_INT>=23){
             int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -70,66 +64,8 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.root_container, new WeatherFragment(), "weather_fragment").commit();
         }
 
-        //RecyclerView recyclerView = findViewById(R.id.weather_recycler);
-        //WeatherAdapter adapter = new WeatherAdapter(weatherList);
-        //recyclerView.setAdapter(adapter);
-
 
     }
-
-    /*public void startLocation(){
-        client = LocationServices.getFusedLocationProviderClient(this);
-        LocationCallback callback = new LocationCallback(){
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-                Location lastlocation  = locationResult.getLastLocation();
-                final double lat = lastlocation.getLatitude();
-                final double lon = lastlocation.getLongitude();
-                //textView.setText(lastlocation.getLongitude()+" , "+lastlocation.getLatitude());
-                /*new Thread(){
-                    @Override
-                    public void run() {
-                        super.run();
-                        try {
-                            List<Address> address = geocoder.getFromLocation(lat, lon, 1);
-                            final Address bestAddress = address.get(0);
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    //textView.setText(lat+", "+lon);
-                                    //textView.setText(bestAddress.getCountryName() +", "+bestAddress.getFeatureName());
-                                }
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }.start();
-            }
-        };
-        LocationRequest request = LocationRequest.create();
-        request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        client.requestLocationUpdates(request, callback, null);
-    }*/
-
-    /*private class DayAdapter extends FragmentStatePagerAdapter {
-
-        public DayAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return WeatherFragment.newInstance(position);
-        }
-
-        @Override
-        public int getCount() {
-            return Day.values().length;
-        }
-    }*/
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

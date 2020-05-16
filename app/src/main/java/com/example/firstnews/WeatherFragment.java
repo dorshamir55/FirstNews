@@ -1,9 +1,11 @@
 package com.example.firstnews;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,16 +39,19 @@ import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class WeatherFragment extends android.app.Fragment {
     private List<Weather> weatherList;
     WeatherAdapter weatheradapter;
     Context context;
 
-    public double lat;
-    public double lon;
+    private Double lat;
+    private Double lon;
 
     FusedLocationProviderClient client;
     Geocoder geocoder;
+    TextView cityTv;
     //Handler handler = new Handler();
 
     final String BASE_LINK = "http://api.openweathermap.org/data/2.5/forecast?appid=2f976482fabfb93ba421d2df01470e6c";
@@ -74,41 +79,8 @@ public class WeatherFragment extends android.app.Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        /*View root = inflater.inflate(R.layout.day_fragment, container, false);
-        Day day = Day.values()[getArguments().getInt("day")];
-        TextView textView = root.findViewById(R.id.day_name);
-        switch (day){
-            case Sunday:
-                textView.setText("Sunday");
-                break;
-            case Monday:
-                textView.setText("Monday");
-                break;
-            case Tuesday:
-                textView.setText("Tuesday");
-                break;
-            case Wednesday:
-                textView.setText("Wednesday");
-                break;
-            case Thursday:
-                textView.setText("Thursday");
-                break;
-            case Friday:
-                textView.setText("Friday");
-                break;
-            case Saturday:
-                textView.setText("Saturday");
-                break;
-        }*/
 
-        //final WeatherManager manager = WeatherManager.getInstance(getActivity());
-
-        //manager.start();
-
-        //weatherList = manager.getWeatherList();
-
-        startLocation();
-        getWeather();
+        startLocationAndWeather();
 
         View root = inflater.inflate(R.layout.weather_fragment, container, false);
         //SystemClock.sleep(800);
@@ -127,7 +99,7 @@ public class WeatherFragment extends android.app.Fragment {
         return root;
     }
 
-    public void startLocation(){
+    public void startLocationAndWeather(){
         geocoder = new Geocoder(getActivity());
         client = LocationServices.getFusedLocationProviderClient(getActivity());
         LocationCallback callback = new LocationCallback() {
@@ -135,26 +107,30 @@ public class WeatherFragment extends android.app.Fragment {
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 Location lastlocation = locationResult.getLastLocation();
-                lat = lastlocation.getLatitude();
-                lon = lastlocation.getLongitude();
+                getWeather(lastlocation.getLatitude(), lastlocation.getLongitude());
             }
         };
 
-        LocationRequest request = LocationRequest.create();
-        request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        client.requestLocationUpdates(request, callback, null);
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        client.requestLocationUpdates(locationRequest, callback, null);
     }
 
-    public void getWeather() {
+    private void getWeather(Double lati, Double longi) {
+
         RequestQueue queue = Volley.newRequestQueue(getActivity());
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK + "&lat=" + "34.78" + "&lon=" + "32.0" +"&units=metric"+"&lang=he", null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK + "&lat=" + lati + "&lon=" + longi +"&units=metric"+"&lang=he", null, new Response.Listener<JSONObject>() {
+
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     //JSONObject rootObject = new JSONObject(response);
                     JSONObject cityObject = response.getJSONObject("city");
                     String city = cityObject.getString("name");
-                    //cityTv
+
+                    cityTv = getView().findViewById(R.id.weather_title);
+                    cityTv.setText("מזג האוויר ב"+city);
+                    //cityTv.setText(lat+", "+lon);
                     //JSONObject listObject = response.getJSONObject("list");
                     JSONArray listArray = response.getJSONArray("list");
                     for(int i=0; i<listArray.length();i++){
