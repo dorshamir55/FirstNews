@@ -25,13 +25,18 @@ public class WeatherFragment extends android.app.Fragment {
         return weatherFragment;
     }*/
 
-    private static List<Weather> weatherList;
+    public WeatherFragment(){
+        final WeatherManager manager = WeatherManager.getInstance(getActivity().getApplicationContext());
+        weatherList = manager.getWeatherList();
+    }
 
-    public static WeatherFragment newInstance(List<Weather> i_weatherList){
+    private List<Weather> weatherList;
+
+    /*public static WeatherFragment newInstance(List<Weather> i_weatherList){
         WeatherFragment weatherFragment = new WeatherFragment();
         weatherList=i_weatherList;
         return weatherFragment;
-    }
+    }*/
 
     @Nullable
     @Override
@@ -68,9 +73,9 @@ public class WeatherFragment extends android.app.Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
 
-        weatherList = new ArrayList<Weather>();
+        /*weatherList = new ArrayList<Weather>();
         String imageUri = "drawable://" + R.drawable.ic_launcher_background;
-        weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));
+        weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));*/
 
         WeatherAdapter weatheradapter = new WeatherAdapter(weatherList);
         recyclerView.setAdapter(weatheradapter);

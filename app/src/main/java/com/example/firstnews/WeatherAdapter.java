@@ -51,8 +51,8 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
         Weather weather = weatherList.get(position);
         holder.timeTv.setText(weather.getTime());
         Picasso.get().load(weather.getImage()).resize(300,200).into(holder.imageTv);
-        holder.celsiusTv.setText(weather.getCelsius().toString());
-        holder.fahrenheitTv.setText(weather.getFahrenheit().toString());
+        holder.celsiusTv.setText(weather.getCelsius());
+        holder.fahrenheitTv.setText(weather.getFahrenheit());
         holder.dateTv.setText(weather.getDate());
         holder.dayTv.setText(weather.getDay());
     }

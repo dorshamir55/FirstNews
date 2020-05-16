@@ -42,20 +42,18 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     final int LOCATION_PERMISSION_REQUEST = 1;
-    final String LINK = "http://api.openweathermap.org/data/2.5/forecast?appid=2f976482fabfb93ba421d2df01470e6c";
-    TextView textView;
-    FusedLocationProviderClient client;
-    Geocoder geocoder;
-    Handler handler = new Handler();
-    List<Weather> weatherList = new ArrayList<Weather>();
 
+    //List<Weather> weatherList = new ArrayList<Weather>();
+    WeatherManager manager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = (TextView) findViewById(R.id.placeHolder);
-        geocoder = new Geocoder(this);
+        manager = new WeatherManager(this);
+
+        //textView = (TextView) findViewById(R.id.placeHolder);
+        //geocoder = new Geocoder(this);
 
         if(Build.VERSION.SDK_INT>=23){
             int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -63,14 +61,14 @@ public class MainActivity extends AppCompatActivity {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             }
             else {
-                startLocation();
+                manager.startLocation();
             }
         }
         else {
-            startLocation();
+            manager.startLocation();
         }
         getFragmentManager().beginTransaction()
-                .add(R.id.root_container, WeatherFragment.newInstance(weatherList), "weather_fragment").commit();
+                .add(R.id.root_container, new WeatherFragment(), "weather_fragment").commit();
         //RecyclerView recyclerView = findViewById(R.id.weather_recycler);
         //WeatherAdapter adapter = new WeatherAdapter(weatherList);
         //recyclerView.setAdapter(adapter);
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void startLocation(){
+    /*public void startLocation(){
         client = LocationServices.getFusedLocationProviderClient(this);
         LocationCallback callback = new LocationCallback(){
             @Override
@@ -88,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 final double lat = lastlocation.getLatitude();
                 final double lon = lastlocation.getLongitude();
                 //textView.setText(lastlocation.getLongitude()+" , "+lastlocation.getLatitude());
-                new Thread(){
+                /*new Thread(){
                     @Override
                     public void run() {
                         super.run();
@@ -98,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    textView.setText(lat+", "+lon);
+                                    //textView.setText(lat+", "+lon);
                                     //textView.setText(bestAddress.getCountryName() +", "+bestAddress.getFeatureName());
                                 }
                             });
@@ -112,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         LocationRequest request = LocationRequest.create();
         request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         client.requestLocationUpdates(request, callback, null);
-    }
+    }*/
 
     /*private class DayAdapter extends FragmentStatePagerAdapter {
 
@@ -156,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
                         }).setCancelable(false).show();
             }
             else
-                startLocation();
+                manager.startLocation();
         }
     }
 }
