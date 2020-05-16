@@ -25,26 +25,28 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class WeatherManager {
     public static WeatherManager instance;
     Context context;
-    List<Weather> weatherList;
+    List<Weather> weatherList = new ArrayList<>();
 
-    double lat;
-    double lon;
+    public double lat;
+    public double lon;
 
     FusedLocationProviderClient client;
     Geocoder geocoder;
-    Handler handler = new Handler();
+    //Handler handler = new Handler();
 
     final String BASE_LINK = "http://api.openweathermap.org/data/2.5/forecast?appid=2f976482fabfb93ba421d2df01470e6c";
     final String BASE_URL_IMG = "http://openweathermap.org/img/w/";
 
     public WeatherManager(Context context) {
         this.context = context;
-        getWeather();
+        //startLocation();
+        //getWeather();
     }
 
     public static WeatherManager getInstance(Context context){
@@ -70,17 +72,36 @@ public class WeatherManager {
         this.weatherList = weatherList;
     }
 
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLon() {
+        return lon;
+    }
+
+    public void setLon(double lon) {
+        this.lon = lon;
+    }
+
     public void startLocation(){
         geocoder = new Geocoder(context);
         client = LocationServices.getFusedLocationProviderClient(context);
-        LocationCallback callback = new LocationCallback(){
+        LocationCallback callback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-                Location lastlocation  = locationResult.getLastLocation();
+                Location lastlocation = locationResult.getLastLocation();
                 lat = lastlocation.getLatitude();
                 lon = lastlocation.getLongitude();
-                //textView.setText(lastlocation.getLongitude()+" , "+lastlocation.getLatitude());
+            }
+        };
+
+                /*//textView.setText(lastlocation.getLongitude()+" , "+lastlocation.getLatitude());
                 new Thread(){
                     @Override
                     public void run() {
@@ -101,7 +122,7 @@ public class WeatherManager {
                     }
                 }.start();
             }
-        };
+        };*/
         LocationRequest request = LocationRequest.create();
         request.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         client.requestLocationUpdates(request, callback, null);
@@ -109,14 +130,14 @@ public class WeatherManager {
 
     public void getWeather() {
         RequestQueue queue = Volley.newRequestQueue(context);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK + "?lat=" + lat + "&lon=" + lon, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK + "&lat=" + lat + "&lon=" + lon+"&units=metric"+"&lang=he", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
                     //JSONObject rootObject = new JSONObject(response);
                     JSONObject cityObject = response.getJSONObject("city");
                     String city = cityObject.getString("name");
-                    JSONObject listObject = response.getJSONObject("list");
+                    //JSONObject listObject = response.getJSONObject("list");
                     JSONArray listArray = response.getJSONArray("list");
                     for(int i=0; i<listArray.length();i++){
                         JSONObject currentElementObject = listArray.getJSONObject(i);
@@ -125,13 +146,12 @@ public class WeatherManager {
                         String time = dateAndTime.substring(11,16);
 
                         JSONObject mainObject = currentElementObject.getJSONObject("main");
-                        Double kelvin = Double.parseDouble(mainObject.getString("temp"));
-                        Double cel = kelvin-273.15;
-                        Double fah = cel * 1.8 + 32.0;
-                        String celsius = String.valueOf(cel)+"\u2103";
-                        String fahrenheit = String.valueOf(fah)+"\u2109";
+                        Double cel = Double.parseDouble(mainObject.getString("temp"));
+                        String celsius = cel+"\u2103";
 
-                        JSONObject weatherObject = currentElementObject.getJSONObject("weather");
+                        JSONObject weatherObject = currentElementObject.getJSONArray("weather").getJSONObject(0);
+                        String description = weatherObject.getString("description");
+
                         String icon = BASE_URL_IMG+weatherObject.getString("icon")+".png";
 
                         String year = dateAndTime.substring(0,4);
@@ -140,7 +160,7 @@ public class WeatherManager {
 
                         String dayFromDate = Day.getDayFromDate(day, month, year);
 
-                        Weather weather = new Weather(dayFromDate, date, time, celsius, fahrenheit, icon);
+                        Weather weather = new Weather(dayFromDate, date, time, celsius, description, icon);
                         weatherList.add(weather);
                     }
 

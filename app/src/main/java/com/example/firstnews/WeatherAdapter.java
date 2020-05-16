@@ -22,18 +22,18 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
     static class WeatherViewHolder extends RecyclerView.ViewHolder{
         TextView timeTv;
-        ImageView imageTv;
+        ImageView imageIv;
         TextView celsiusTv;
-        TextView fahrenheitTv;
+        TextView descriptionTv;
         TextView dayTv;
         TextView dateTv;
 
         WeatherViewHolder(View v){
             super(v);
             timeTv = (TextView)v.findViewById(R.id.time_tv);
-            imageTv = (ImageView)v.findViewById(R.id.image_tv);
+            imageIv = (ImageView)v.findViewById(R.id.image_iv);
             celsiusTv = (TextView)v.findViewById(R.id.celsius_tv);
-            fahrenheitTv = (TextView)v.findViewById(R.id.fahrenheit_tv);
+            descriptionTv = (TextView)v.findViewById(R.id.description_tv);
             dayTv = (TextView)v.findViewById(R.id.day_tv);
             dateTv = (TextView)v.findViewById(R.id.date_tv);
         }
@@ -50,9 +50,9 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
     public void onBindViewHolder(@NonNull WeatherViewHolder holder, int position) {
         Weather weather = weatherList.get(position);
         holder.timeTv.setText(weather.getTime());
-        Picasso.get().load(weather.getImage()).resize(300,200).into(holder.imageTv);
+        Picasso.get().load(weather.getImage()).resize(300,300).into(holder.imageIv);
         holder.celsiusTv.setText(weather.getCelsius());
-        holder.fahrenheitTv.setText(weather.getFahrenheit());
+        holder.descriptionTv.setText(weather.getDescription());
         holder.dateTv.setText(weather.getDate());
         holder.dayTv.setText(weather.getDay());
     }

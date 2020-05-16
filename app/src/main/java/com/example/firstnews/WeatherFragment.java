@@ -12,11 +12,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WeatherFragment extends android.app.Fragment {
-    private List<Weather> weatherList;
+    //private List<Weather> weatherList;
 
     /*public static WeatherFragment newInstance (int num){
         WeatherFragment weatherFragment = new WeatherFragment();
@@ -27,8 +28,7 @@ public class WeatherFragment extends android.app.Fragment {
     }*/
 
     public WeatherFragment(){
-        final WeatherManager manager = WeatherManager.getInstance(getActivity().getApplicationContext());
-        weatherList = manager.getWeatherList();
+        //weatherList = new ArrayList<>();
     }
 
     /*public static WeatherFragment newInstance(List<Weather> i_weatherList){
@@ -67,6 +67,13 @@ public class WeatherFragment extends android.app.Fragment {
                 break;
         }*/
 
+        final WeatherManager manager = WeatherManager.getInstance(getActivity());
+
+        manager.startLocation();
+        manager.getWeather();
+
+        //weatherList = manager.getWeatherList();
+
         View root = inflater.inflate(R.layout.weather_fragment, container, false);
         RecyclerView recyclerView = root.findViewById(R.id.weather_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
@@ -76,8 +83,9 @@ public class WeatherFragment extends android.app.Fragment {
         String imageUri = "drawable://" + R.drawable.ic_launcher_background;
         weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));*/
 
-        WeatherAdapter weatheradapter = new WeatherAdapter(weatherList);
+        WeatherAdapter weatheradapter = new WeatherAdapter(manager.getWeatherList());
         recyclerView.setAdapter(weatheradapter);
         return root;
     }
+
 }

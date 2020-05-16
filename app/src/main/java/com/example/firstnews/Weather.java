@@ -11,15 +11,15 @@ public class Weather {
     String date;
     String time;
     String celsius;
-    String fahrenheit;
+    String description;
     String image;
 
-    public Weather(String day, String date, String time, String celsius, String fahrenheit, String image) {
+    public Weather(String day, String date, String time, String celsius, String description, String image) {
         this.day = day;
         this.date = date;
         this.time = time;
         this.celsius = celsius;
-        this.fahrenheit = fahrenheit;
+        this.description = description;
         this.image = image;
     }
 
@@ -62,12 +62,12 @@ public class Weather {
         this.celsius = celsius;
     }
 
-    public String getFahrenheit() {
-        return fahrenheit;
+    public String getDescription() {
+        return description;
     }
 
-    public void setFahrenheit(String fahrenheit) {
-        this.fahrenheit = fahrenheit;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getImage() {

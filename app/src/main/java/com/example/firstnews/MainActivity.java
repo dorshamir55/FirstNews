@@ -61,14 +61,15 @@ public class MainActivity extends AppCompatActivity {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
             }
             else {
-                manager.startLocation();
+                getFragmentManager().beginTransaction()
+                        .add(R.id.root_container, new WeatherFragment(), "weather_fragment").commit();
             }
         }
         else {
-            manager.startLocation();
+            getFragmentManager().beginTransaction()
+                    .add(R.id.root_container, new WeatherFragment(), "weather_fragment").commit();
         }
-        getFragmentManager().beginTransaction()
-                .add(R.id.root_container, new WeatherFragment(), "weather_fragment").commit();
+
         //RecyclerView recyclerView = findViewById(R.id.weather_recycler);
         //WeatherAdapter adapter = new WeatherAdapter(weatherList);
         //recyclerView.setAdapter(adapter);
@@ -153,8 +154,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }).setCancelable(false).show();
             }
-            else
-                manager.startLocation();
+            else {
+                getFragmentManager().beginTransaction()
+                        .add(R.id.root_container, new WeatherFragment(), "weather_fragment").commit();
+            }
         }
     }
 }
