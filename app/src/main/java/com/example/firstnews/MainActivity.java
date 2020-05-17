@@ -27,18 +27,6 @@ import android.provider.Settings;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
-
-import java.io.FileDescriptor;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-
 public class MainActivity extends AppCompatActivity {
 
     final int LOCATION_PERMISSION_REQUEST = 1;
@@ -56,15 +44,16 @@ public class MainActivity extends AppCompatActivity {
             }
             else {
                 getFragmentManager().beginTransaction()
-                        .add(R.id.root_container, new WeatherFragment(), "weather_fragment").commit();
+                        .add(R.id.frame_container1, new WeatherFragment(), "weather_fragment")
+                        .add(R.id.frame_container2, new NewsFragment(), "news_fragment").commit();
             }
         }
         else {
             getFragmentManager().beginTransaction()
-                    .add(R.id.root_container, new WeatherFragment(), "weather_fragment").commit();
+                    .add(R.id.frame_container1, new WeatherFragment(), "weather_fragment").commit();
+            getFragmentManager().beginTransaction()
+                    .add(R.id.frame_container2, new NewsFragment(), "news_fragment").commit();
         }
-
-
     }
 
     @Override
@@ -92,7 +81,9 @@ public class MainActivity extends AppCompatActivity {
             }
             else {
                 getFragmentManager().beginTransaction()
-                        .add(R.id.root_container, new WeatherFragment(), "weather_fragment").commit();
+                        .add(R.id.frame_container1, new WeatherFragment(), "weather_fragment").commit();
+                getFragmentManager().beginTransaction()
+                        .add(R.id.frame_container2, new NewsFragment(), "news_fragment").commit();
             }
         }
     }

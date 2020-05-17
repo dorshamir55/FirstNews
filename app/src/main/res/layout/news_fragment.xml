@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:id="@+id/weather_title_tv"
+                android:id="@+id/news_title_tv"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:text="@string/wait" />
@@ -41,6 +41,6 @@
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/weather_recycler"/>
+            android:id="@+id/news_recycler"/>
     </LinearLayout>
 </LinearLayout>

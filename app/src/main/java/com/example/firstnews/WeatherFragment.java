@@ -132,12 +132,13 @@ public class WeatherFragment extends android.app.Fragment {
                     JSONObject cityObject = response.getJSONObject("city");
                     String city = cityObject.getString("name");
 
-                    cityTv = getView().findViewById(R.id.weather_title);
+                    cityTv = getView().findViewById(R.id.weather_title_tv);
                     cityTv.setText("מזג האוויר ב"+city);
                     //cityTv.setText(lat+", "+lon);
                     //JSONObject listObject = response.getJSONObject("list");
                     JSONArray listArray = response.getJSONArray("list");
-                    for(int i=0; i<listArray.length();i++){
+                    int i;
+                    for(i=0; i<listArray.length();i++){
                         JSONObject currentElementObject = listArray.getJSONObject(i);
                         String dateAndTime = currentElementObject.getString("dt_txt");
                         String date = dateAndTime.substring(5,10);
@@ -162,7 +163,7 @@ public class WeatherFragment extends android.app.Fragment {
                         weatherList.add(weather);
                         //weatheradapter.notifyItemInserted(i);
                     }
-                    weatheradapter.notifyItemInserted(39);
+                    weatheradapter.notifyItemInserted(i-1);
 
                     //weatherList = new ArrayList<Weather>();
                     //String imageUri = "drawable://" + R.drawable.ic_launcher_background;

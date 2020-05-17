@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">FirstNews</string>
     <string name="main_title">First news</string>
-    <string name="news_title">News</string>
+    <string name="sport_title">Sports</string>
     <string name="weather_title">Weather</string>
     <string name="error">Error!</string>
     <string name="permission_msg">The application must have location permission</string>

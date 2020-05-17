@@ -23,10 +23,16 @@ public class Weather {
         this.image = image;
     }
 
-    @NonNull
     @Override
     public String toString() {
-        return super.toString();
+        return "Weather{" +
+                "day='" + day + '\'' +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                ", celsius='" + celsius + '\'' +
+                ", description='" + description + '\'' +
+                ", image='" + image + '\'' +
+                '}';
     }
 
     public String getDay() {

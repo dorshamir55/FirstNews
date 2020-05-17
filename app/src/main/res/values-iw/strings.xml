@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">FirstNews</string>
     <string name="main_title">הראשון בחדשות</string>
-    <string name="news_title">חדשות</string>
+    <string name="sport_title">ספורט</string>
     <string name="weather_title">מזג אוויר</string>
     <string name="error">שגיאה!</string>
     <string name="permission_msg">האפליקציה חייבת הרשאות מיקום</string>

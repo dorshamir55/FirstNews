@@ -30,12 +30,12 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherV
 
         WeatherViewHolder(View v){
             super(v);
-            timeTv = (TextView)v.findViewById(R.id.time_tv);
-            imageIv = (ImageView)v.findViewById(R.id.image_iv);
-            celsiusTv = (TextView)v.findViewById(R.id.celsius_tv);
-            descriptionTv = (TextView)v.findViewById(R.id.description_tv);
-            dayTv = (TextView)v.findViewById(R.id.day_tv);
-            dateTv = (TextView)v.findViewById(R.id.date_tv);
+            timeTv = (TextView)v.findViewById(R.id.weather_time_tv);
+            imageIv = (ImageView)v.findViewById(R.id.weather_image_iv);
+            celsiusTv = (TextView)v.findViewById(R.id.weather_celsius_tv);
+            descriptionTv = (TextView)v.findViewById(R.id.weather_description_tv);
+            dayTv = (TextView)v.findViewById(R.id.weather_day_tv);
+            dateTv = (TextView)v.findViewById(R.id.weather_date_tv);
         }
     }
 
