@@ -38,6 +38,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -45,6 +47,8 @@ public class WeatherFragment extends android.app.Fragment {
     private List<Weather> weatherList;
     WeatherAdapter weatheradapter;
     Context context;
+    Timer timer;
+    Handler handler = new Handler();
 
     private Double lat;
     private Double lon;
@@ -52,7 +56,6 @@ public class WeatherFragment extends android.app.Fragment {
     FusedLocationProviderClient client;
     Geocoder geocoder;
     TextView cityTv;
-    //Handler handler = new Handler();
 
     final String BASE_LINK = "http://api.openweathermap.org/data/2.5/forecast?appid=2f976482fabfb93ba421d2df01470e6c";
     final String BASE_URL_IMG = "http://openweathermap.org/img/w/";
@@ -94,12 +97,13 @@ public class WeatherFragment extends android.app.Fragment {
 
         weatheradapter = new WeatherAdapter(weatherList);
         recyclerView.setAdapter(weatheradapter);
-        weatheradapter.notifyDataSetChanged();
-        weatheradapter.notifyItemInserted(39);
+        //weatheradapter.notifyDataSetChanged();
+        //weatheradapter.notifyItemInserted(39);
         return root;
     }
 
     public void startLocationAndWeather(){
+
         geocoder = new Geocoder(getActivity());
         client = LocationServices.getFusedLocationProviderClient(getActivity());
         LocationCallback callback = new LocationCallback() {
@@ -156,8 +160,9 @@ public class WeatherFragment extends android.app.Fragment {
 
                         Weather weather = new Weather(dayFromDate, date, time, celsius, description, icon);
                         weatherList.add(weather);
-                        weatheradapter.notifyItemInserted(i);
+                        //weatheradapter.notifyItemInserted(i);
                     }
+                    weatheradapter.notifyItemInserted(39);
 
                     //weatherList = new ArrayList<Weather>();
                     //String imageUri = "drawable://" + R.drawable.ic_launcher_background;

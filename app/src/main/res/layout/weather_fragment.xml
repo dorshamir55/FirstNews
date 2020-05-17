@@ -31,7 +31,7 @@
                 android:id="@+id/weather_title"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:text="@string/weather_title" />
+                android:text="@string/wait" />
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 
