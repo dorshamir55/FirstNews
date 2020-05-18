@@ -31,7 +31,7 @@ public class NewsFragment extends android.app.Fragment {
 
     Context context;
     final String BASE_LINK = "http://newsapi.org/v2/top-headlines?country=il&category=sports&apiKey=77d0acf9be214ed4b7c4c438e081d389";
-
+    final String DEFAULT_ICON="https://cdn3.iconfinder.com/data/icons/iconano-text-editor/512/005-X-512.png";
     TextView sportTv;
 
     public NewsFragment(){
@@ -74,11 +74,24 @@ public class NewsFragment extends android.app.Fragment {
                         String title = currentElementObject.getString("title");
 
                         String date = currentElementObject.getString("publishedAt");
-                        String part1 = date.substring(11,19);
-                        String part2 = date.substring(0,10);
+                        String part1 = date.substring(11,16);
+                        String part2 = date.substring(0,4)+"."+date.substring(5,7)+"."+date.substring(8,10);
+                        if(date.substring(5,6).equals("0")){
+                            part2 = date.substring(8,10)+"."+date.substring(6,7)+"."+date.substring(0,4);
+                        }
+                        if(part1.substring(0,1).equals("0")){
+                            part1 = date.substring(12,16);
+                        }
                         date = part1+"  "+part2;
                         String description = currentElementObject.getString("description");
+                        if(description.equals("null")){
+                            description="";
+                        }
+
                         String icon = currentElementObject.getString("urlToImage");
+                        if(icon.equals("null")){
+                            icon = DEFAULT_ICON;
+                        }
 
                         News news = new News(title, description, icon, date);
                         newsList.add(news);

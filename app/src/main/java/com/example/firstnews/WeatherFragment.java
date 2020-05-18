@@ -141,7 +141,11 @@ public class WeatherFragment extends android.app.Fragment {
                     for(i=0; i<listArray.length();i++){
                         JSONObject currentElementObject = listArray.getJSONObject(i);
                         String dateAndTime = currentElementObject.getString("dt_txt");
-                        String date = dateAndTime.substring(5,10);
+                        String date = dateAndTime.substring(8,10)+"."+dateAndTime.substring(5,7);
+                        if(date.substring(3,4).equals("0")){
+                            date = date.substring(0,3)+date.substring(4,5);
+                        }
+
                         String time = dateAndTime.substring(11,16);
 
                         JSONObject mainObject = currentElementObject.getJSONObject("main");
