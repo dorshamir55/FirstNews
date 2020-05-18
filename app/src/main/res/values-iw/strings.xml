@@ -6,7 +6,8 @@
     <string name="weather_title">מזג אוויר</string>
     <string name="error">שגיאה!</string>
     <string name="permission_msg">האפליקציה חייבת הרשאות מיקום</string>
-    <string name="settings">הגדרות</string>
+    <string name="location_settings">הגדרות מיקום</string>
     <string name="quit">יציאה</string>
     <string name="wait">טוען...</string>
+    <string name="notifications">התראות</string>
 </resources>
