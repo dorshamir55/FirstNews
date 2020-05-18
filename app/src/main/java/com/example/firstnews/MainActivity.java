@@ -1,16 +1,19 @@
 package com.example.firstnews;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +21,7 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     final int LOCATION_PERMISSION_REQUEST = 1;
+    final int SETTINGS_REQUEST = 2;
 
     //List<Weather> weatherList = new ArrayList<Weather>();
     @Override
@@ -46,34 +50,44 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId()==R.id.action_location_settings){
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle(R.string.error).setMessage(R.string.permission_msg)
-                    .setPositiveButton(R.string.location_settings, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            intent.setData(Uri.parse("package:"+getPackageName()));
-                            startActivity(intent);
-
-                        }
-                    })
-                    .setNegativeButton(R.string.quit, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    }).setCancelable(false).show();
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.parse("package:"+getPackageName()));
+            startActivity(intent);
         }
         else if(item.getItemId()==R.id.action_notifications){
-
+            startActivityForResult(new Intent(this, SettingsActivity.class), SETTINGS_REQUEST);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==SETTINGS_REQUEST){
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+            String choiceTime = sp.getString("list_prefernce", "0");
+            switch (choiceTime){
+                case "0":
+                    //never
+                    break;
+                case "1":
+                    //60 sec
+                    break;
+                case "2":
+                    //30 min
+                    break;
+                case "3":
+                    //1 hour
+                    break;
+            }
+        }
     }
 
     @Override

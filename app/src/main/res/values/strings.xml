@@ -8,5 +8,27 @@
     <string name="location_settings">Location ettings</string>
     <string name="quit">Quit</string>
     <string name="wait">wait...</string>
-    <string name="notifications">notifications</string>
+    <string name="notifications_settings">Notifications settings</string>
+    <string name="notifications_settings_title">Last news notification</string>
+    <string name="notifications_settings_summary">Select the frequency of time when the notification appears</string>
+    <string name="one_minute">60 seconds</string>
+    <string name="half_hour">30 minutes</string>
+    <string name="one_hour">1 hour</string>
+    <string name="never">Never</string>
+
+    <string-array name="list_entries">
+        <item>@string/never</item>
+        <item>@string/one_minute</item>
+        <item>@string/half_hour</item>
+        <item>@string/one_hour</item>
+    </string-array>
+
+    <string-array name="list_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string name="notifications_settings_news">Notifications settings - news</string>
+
 </resources>
