@@ -5,12 +5,14 @@ public class News {
     String description;
     String image;
     String date;
+    String webUrl;
 
-    public News(String title, String description, String image, String date) {
+    public News(String title, String description, String image, String date, String webUrl) {
         this.title = title;
         this.description = description;
         this.image = image;
         this.date = date;
+        this.webUrl = webUrl;
     }
 
     @Override
@@ -20,6 +22,7 @@ public class News {
                 ", description='" + description + '\'' +
                 ", image='" + image + '\'' +
                 ", date='" + date + '\'' +
+                ", webUrl='" + webUrl + '\'' +
                 '}';
     }
 
@@ -54,4 +57,13 @@ public class News {
     public void setDate(String date) {
         this.date = date;
     }
+
+    public String getWebUrl() {
+        return webUrl;
+    }
+
+    public void setWebUrl(String webUrl) {
+        this.webUrl = webUrl;
+    }
 }
+

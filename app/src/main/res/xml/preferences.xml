@@ -3,7 +3,7 @@
     <PreferenceCategory
         android:title="@string/notifications_settings_news">
         <ListPreference
-            android:title="@string/notifications_settings_title"
+            android:title="@string/notifications_settings"
             android:summary="@string/notifications_settings_summary"
             android:key="list_preference"
             android:entryValues="@array/list_values"

@@ -1,6 +1,8 @@
 package com.example.firstnews;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +33,7 @@ public class NewsFragment extends android.app.Fragment {
 
     Context context;
     final String BASE_LINK = "http://newsapi.org/v2/top-headlines?country=il&category=sports&apiKey=77d0acf9be214ed4b7c4c438e081d389";
-    final String DEFAULT_ICON="https://cdn3.iconfinder.com/data/icons/iconano-text-editor/512/005-X-512.png";
+    //final String DEFAULT_ICON="https://cdn3.iconfinder.com/data/icons/iconano-text-editor/512/005-X-512.png";
     TextView sportTv;
 
     public NewsFragment(){
@@ -50,6 +52,15 @@ public class NewsFragment extends android.app.Fragment {
                 LinearLayoutManager.VERTICAL, false));
 
         newsAdapter = new NewsAdapter(newsList);
+
+        newsAdapter.setListener(new NewsAdapter.MyNewsListener() {
+            @Override
+            public void onNewsClicked(int position, View view, String url) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(browserIntent);
+            }
+        });
+
         recyclerView.setAdapter(newsAdapter);
 
         return root;
@@ -71,6 +82,10 @@ public class NewsFragment extends android.app.Fragment {
                     int i;
                     for(i=0; i<articlesArray.length();i++){
                         JSONObject currentElementObject = articlesArray.getJSONObject(i);
+                        while(currentElementObject.getJSONObject("source").getString("name").equals("Israelhayom.co.il")){
+                            i++;
+                            currentElementObject = articlesArray.getJSONObject(i);
+                        }
                         String title = currentElementObject.getString("title");
 
                         String date = currentElementObject.getString("publishedAt");
@@ -89,11 +104,13 @@ public class NewsFragment extends android.app.Fragment {
                         }
 
                         String icon = currentElementObject.getString("urlToImage");
-                        if(icon.equals("null")){
+                        /*if(icon.equals("null")){
                             icon = DEFAULT_ICON;
-                        }
+                        }*/
 
-                        News news = new News(title, description, icon, date);
+                        String webUrl = currentElementObject.getString("url");
+
+                        News news = new News(title, description, icon, date, webUrl);
                         newsList.add(news);
                         //weatheradapter.notifyItemInserted(i);
                     }
