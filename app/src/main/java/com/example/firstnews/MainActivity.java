@@ -2,10 +2,16 @@ package com.example.firstnews;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,17 +23,69 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     final int LOCATION_PERMISSION_REQUEST = 1;
     final int SETTINGS_REQUEST = 2;
+    final int NOTIFICATION_ID = 3;
+    AlarmManager alarmManager;
 
     //List<Weather> weatherList = new ArrayList<Weather>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        TextView textView = findViewById(R.id.main_title_tv);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+                int time=0;
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(v.getContext());
+                String choiceTime = sp.getString("notification_time", "0");
+                String choiceKind = sp.getString("notification_kind", "0");
+
+                if(!choiceTime.equals("0")) {
+                    switch (choiceTime) {
+                        case "1":
+                            //60 sec
+                            time = 60;
+                            break;
+                        case "2":
+                            //30 min
+                            time = 30 * 60;
+                            break;
+                        case "3":
+                            //1 hour
+                            time = 10;
+                            break;
+                    }
+
+                    Intent intent = new Intent(MainActivity.this, NotificationReceiver.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + time * 1000, pendingIntent);
+                    Toast.makeText(MainActivity.this, "Alarm set", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Intent intent = new Intent(MainActivity.this, NotificationReceiver.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    alarmManager.cancel(pendingIntent);
+                    pendingIntent.cancel();
+                }
+
+            }
+        });
+
+
+        //final Intent intent = new Intent(MainActivity.this, NotificationService.class);
+        //startService(intent);
 
         if(Build.VERSION.SDK_INT>=23){
             int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -62,33 +120,54 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if(item.getItemId()==R.id.action_notifications){
-            startActivityForResult(new Intent(this, SettingsActivity.class), SETTINGS_REQUEST);
+            startActivity(new Intent(this, SettingsActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==SETTINGS_REQUEST){
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-            String choiceTime = sp.getString("list_prefernce", "0");
-            switch (choiceTime){
-                case "0":
-                    //never
-                    break;
-                case "1":
-                    //60 sec
-                    break;
-                case "2":
-                    //30 min
-                    break;
-                case "3":
-                    //1 hour
-                    break;
+            String choiceTime = sp.getString("notification_time", "0");
+            String choiceKind = sp.getString("notification_kind", "0");
+            int time=0;
+            if(choiceKind.equals(R.string.last_news)) {
+                switch (choiceTime) {
+                    case "0":
+                        //never
+                        break;
+                    case "1":
+                        //60 sec
+                        time = 6000;
+                        break;
+                    case "2":
+                        //30 min
+                        break;
+                    case "3":
+                        //1 hour
+                        break;
+                }
+            }
+            else{
+                switch (choiceTime) {
+                    case "0":
+                        //never
+                        break;
+                    case "1":
+                        //60 sec
+                        break;
+                    case "2":
+                        //30 min
+                        break;
+                    case "3":
+                        //1 hour
+                        break;
+                }
             }
         }
-    }
+    }*/
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

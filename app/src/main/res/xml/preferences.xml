@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
-        android:title="@string/notifications_settings_news">
-        <ListPreference
-            android:title="@string/notifications_settings"
-            android:summary="@string/notifications_settings_summary"
-            android:key="list_preference"
-            android:entryValues="@array/list_values"
-            android:entries="@array/list_entries"/>
-    </PreferenceCategory>
+        <PreferenceCategory android:title="@string/notifications_settings">
+                <ListPreference
+                    android:title="@string/notifications_settings_title_time"
+                    android:summary="@string/notifications_settings_summary_time"
+                    android:key="notification_time"
+                    android:entryValues="@array/list_values_time"
+                    android:entries="@array/list_entries_time"/>
+                <ListPreference
+                    android:title="@string/notifications_settings_title_kind"
+                    android:summary="@string/notifications_settings_summary_kind"
+                    android:key="notification_kind"
+                    android:entryValues="@array/list_values_kind"
+                    android:entries="@array/list_entries_kind"/>
+        </PreferenceCategory>
 </PreferenceScreen>

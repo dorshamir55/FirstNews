@@ -10,11 +10,14 @@
     <string name="quit">יציאה</string>
     <string name="wait">טוען...</string>
     <string name="notifications_settings">הגדרות התראות</string>
-    <string name="notifications_settings_title">התראת חדשות אחרונות</string>
-    <string name="notifications_settings_summary">"בחר את תדירות הזמן בה תופיע ההתראה "</string>
+    <string name="notifications_settings_title_time">תדירות זמן</string>
+    <string name="notifications_settings_summary_time">בחר את תדירות הזמן בה תופיע ההתראה</string>
     <string name="one_minute">60 שניות</string>
     <string name="half_hour">30 דקות</string>
     <string name="one_hour">שעה אחת</string>
     <string name="never">אף פעם</string>
-    <string name="notifications_settings_news">הגדרות התראות - חדשות</string>
+    <string name="last_news">חדשות אחרונות</string>
+    <string name="notification_settings_summary_kind">בחר התראה - חדשות אחרונות /מזג אוויר</string>
+    <string name="notifications_settings_title_kind">סוג התראה</string>
+    <string name="notifications_settings_summary_kind">בחר את סוג ההתראה</string>
 </resources>
