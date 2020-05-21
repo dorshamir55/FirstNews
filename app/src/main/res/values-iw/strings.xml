@@ -20,4 +20,8 @@
     <string name="notification_settings_summary_kind">בחר התראה - חדשות אחרונות /מזג אוויר</string>
     <string name="notifications_settings_title_kind">סוג התראה</string>
     <string name="notifications_settings_summary_kind">בחר את סוג ההתראה</string>
+    <string name="notifications_settings_title_active">הפעל התראה</string>
+    <string name="notifications_settings_summary_active">בחר להפעלת ההתראה</string>
+    <string name="notification_active">התראה הופעלה</string>
+    <string name="notification_cancel">התראה בוטלה</string>
 </resources>

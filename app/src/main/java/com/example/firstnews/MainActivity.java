@@ -24,6 +24,7 @@ import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,13 +33,17 @@ public class MainActivity extends AppCompatActivity {
     final int LOCATION_PERMISSION_REQUEST = 1;
     final int SETTINGS_REQUEST = 2;
     final int NOTIFICATION_ID = 3;
+    final int PENDING_ID = 4;
     AlarmManager alarmManager;
+    Switch prefSwitch;
 
     //List<Weather> weatherList = new ArrayList<Weather>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //prefSwitch = (Switch)findViewById(R.id.)
 
         TextView textView = findViewById(R.id.main_title_tv);
         textView.setOnClickListener(new View.OnClickListener() {
@@ -48,34 +53,35 @@ public class MainActivity extends AppCompatActivity {
                 alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
                 int time=0;
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(v.getContext());
-                String choiceTime = sp.getString("notification_time", "0");
-                String choiceKind = sp.getString("notification_kind", "0");
+                String choiceTime = sp.getString("notification_time", "2");
+                boolean checked = sp.getBoolean("notification_active", false);
 
-                if(!choiceTime.equals("0")) {
+                if(checked) {
                     switch (choiceTime) {
-                        case "1":
+                        case "0":
                             //60 sec
                             time = 60;
                             break;
-                        case "2":
+                        case "1":
                             //30 min
                             time = 30 * 60;
                             break;
-                        case "3":
+                        case "2":
                             //1 hour
                             time = 10;
                             break;
                     }
 
                     Intent intent = new Intent(MainActivity.this, NotificationReceiver.class);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, PENDING_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
                     alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + time * 1000, pendingIntent);
-                    Toast.makeText(MainActivity.this, "Alarm set", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, R.string.notification_active, Toast.LENGTH_SHORT).show();
                 }
                 else{
+                    Toast.makeText(MainActivity.this, R.string.notification_cancel, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(MainActivity.this, NotificationReceiver.class);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, NOTIFICATION_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, PENDING_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
                     alarmManager.cancel(pendingIntent);
                     pendingIntent.cancel();
                 }

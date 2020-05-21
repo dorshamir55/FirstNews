@@ -21,7 +21,6 @@
     <string name="notifications_settings_summary_kind">Select kind of notification</string>
 
     <string-array name="list_entries_time">
-        <item>@string/never</item>
         <item>@string/one_minute</item>
         <item>@string/half_hour</item>
         <item>@string/one_hour</item>
@@ -31,7 +30,6 @@
         <item>0</item>
         <item>1</item>
         <item>2</item>
-        <item>3</item>
     </string-array>
 
     <string-array name="list_entries_kind">
@@ -43,6 +41,10 @@
         <item>0</item>
         <item>1</item>
     </string-array>
+    <string name="notifications_settings_title_active">Active notification</string>
+    <string name="notifications_settings_summary_active">Select to active the notification</string>
+    <string name="notification_active">Notification activated</string>
+    <string name="notification_cancel">Notification cancelled</string>
 
 
 </resources>
