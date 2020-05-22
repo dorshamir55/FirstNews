@@ -57,6 +57,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     Toast.makeText(SettingsActivity.this, R.string.notification_active, Toast.LENGTH_SHORT).show();
                 }
             });
+            flagToastCancel = true;
             switch (choiceTime) {
                 case "0":
                     //60 sec
