@@ -2,9 +2,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
         <PreferenceCategory android:title="@string/notifications_settings">
                 <SwitchPreference
-                    android:title="@string/notifications_settings_title_active"
+                    android:key="notification_active"
+                    android:onClick="callNotification"
                     android:summary="@string/notifications_settings_summary_active"
-                    android:key="notification_active"/>
+                    android:title="@string/notifications_settings_title_active" />
 
                 <ListPreference
                     android:title="@string/notifications_settings_title_time"

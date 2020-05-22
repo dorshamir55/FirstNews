@@ -19,7 +19,10 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,10 +35,9 @@ public class MainActivity extends AppCompatActivity {
 
     final int LOCATION_PERMISSION_REQUEST = 1;
     final int SETTINGS_REQUEST = 2;
-    final int NOTIFICATION_ID = 3;
-    final int PENDING_ID = 4;
+    final int PENDING_ID = 5;
     AlarmManager alarmManager;
-    Switch prefSwitch;
+    SwitchPreference prefSwitch;
 
     //List<Weather> weatherList = new ArrayList<Weather>();
     @Override
@@ -43,14 +45,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //prefSwitch = (Switch)findViewById(R.id.)
+        //Intent intent = new Intent(this, BackgroundNotificationService.class);
+
+        //prefSwitch =
 
         TextView textView = findViewById(R.id.main_title_tv);
         textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+                                        @Override
+                                        public void onClick(View v) {
+                                            callNotification();
+                                        }
+                                    });
+                /*alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
                 int time=0;
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(v.getContext());
                 String choiceTime = sp.getString("notification_time", "2");
@@ -87,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
-        });
+        });*/
 
 
         //final Intent intent = new Intent(MainActivity.this, NotificationService.class);
@@ -110,7 +116,12 @@ public class MainActivity extends AppCompatActivity {
             getFragmentManager().beginTransaction()
                     .add(R.id.frame_container2, new NewsFragment(), "news_fragment").commit();
         }
-    }
+     }
+
+     public void callNotification(){
+         Intent intent = new Intent(this, BackgroundNotificationService.class);
+         startService(intent);
+     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

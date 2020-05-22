@@ -49,6 +49,8 @@ public class WeatherFragment extends android.app.Fragment {
     Context context;
     Timer timer;
     Handler handler = new Handler();
+    static Weather lastWeather;
+    static String city;
 
     private Double lat;
     private Double lon;
@@ -130,7 +132,7 @@ public class WeatherFragment extends android.app.Fragment {
                 try {
                     //JSONObject rootObject = new JSONObject(response);
                     JSONObject cityObject = response.getJSONObject("city");
-                    String city = cityObject.getString("name");
+                    city = cityObject.getString("name");
 
                     cityTv = getView().findViewById(R.id.weather_title_tv);
                     cityTv.setText("מזג האוויר ב"+city);
@@ -169,6 +171,7 @@ public class WeatherFragment extends android.app.Fragment {
                     }
                     weatheradapter.notifyItemInserted(i-1);
 
+                    lastWeather = weatherList.get(0);
                     //weatherList = new ArrayList<Weather>();
                     //String imageUri = "drawable://" + R.drawable.ic_launcher_background;
                     //weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));
@@ -185,6 +188,14 @@ public class WeatherFragment extends android.app.Fragment {
         });
         queue.add(request);
         queue.start();
+    }
+
+    public static Weather getLastWeather(){
+        return lastWeather;
+    }
+
+    public static String getLastLocation(){
+        return city;
     }
 
 }

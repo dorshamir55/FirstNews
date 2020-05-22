@@ -46,6 +46,7 @@ public class NewsFragment extends android.app.Fragment {
     private List<News> newsList;
     NewsAdapter newsAdapter;
     NotificationManager manager;
+    static News lastNews;
 
     Context context;
     final String BASE_LINK = "http://newsapi.org/v2/top-headlines?country=il&category=sports&apiKey=77d0acf9be214ed4b7c4c438e081d389";
@@ -133,6 +134,8 @@ public class NewsFragment extends android.app.Fragment {
                     }
                     newsAdapter.notifyItemInserted(i-1);
 
+                    lastNews = newsList.get(0);
+
                     //final News lastNews = newsList.get(0);
 
                 } catch (JSONException e) {
@@ -147,5 +150,9 @@ public class NewsFragment extends android.app.Fragment {
         });
         queue.add(request);
         queue.start();
+    }
+
+    public static News getLastNews(){
+        return lastNews;
     }
 }
