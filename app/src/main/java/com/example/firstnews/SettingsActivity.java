@@ -20,14 +20,24 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     final int PENDING_ID = 5;
     AlarmManager alarmManager;
     android.os.Handler handler = new Handler();
+    boolean flagToastCancel;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        if(sp.getBoolean("notification_active", false)){
+            flagToastCancel = true;
+        }
+        else
+        {
+            flagToastCancel = false;
+        }
         getSupportFragmentManager().beginTransaction()
                 .add(android.R.id.content, new SettingsFragment()).commit();
-        pref.registerOnSharedPreferenceChangeListener(this);
+        sp.registerOnSharedPreferenceChangeListener(this);
     }
 
     @Override
@@ -38,21 +48,15 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         int time=0;
         SharedPreferences sp = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
         String choiceTime = sp.getString("notification_time", "2");
-        boolean checked = sp.getBoolean("notification_active", false);
-        boolean flagToastActive = true;
-        boolean flafToastCancel = true;
+        boolean switched = sp.getBoolean("notification_active", false);
 
-        if(checked) {
-            if(flagToastActive) {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(SettingsActivity.this, R.string.notification_active, Toast.LENGTH_SHORT).show();
-                    }
-                });
-                flafToastCancel = true;
-                flagToastActive = false;
-            }
+        if(switched) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(SettingsActivity.this, R.string.notification_active, Toast.LENGTH_SHORT).show();
+                }
+            });
             switch (choiceTime) {
                 case "0":
                     //60 sec
@@ -73,15 +77,14 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + time * 1000, pendingIntent);
         }
         else{
-            if(flafToastCancel) {
+            if(flagToastCancel) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(SettingsActivity.this, R.string.notification_cancel, Toast.LENGTH_SHORT).show();
                     }
                 });
-                flafToastCancel = false;
-                flagToastActive = true;
+                flagToastCancel = false;
             }
             PendingIntent pendingIntent = PendingIntent.getBroadcast(SettingsActivity.this, PENDING_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
             alarmManager.cancel(pendingIntent);
