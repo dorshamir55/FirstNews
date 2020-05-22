@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-        <PreferenceCategory android:title="@string/notifications_settings">
-                <SwitchPreference
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+        <androidx.preference.PreferenceCategory android:title="@string/notifications_settings">
+                <androidx.preference.SwitchPreference
                     android:key="notification_active"
                     android:onClick="callNotification"
                     android:summary="@string/notifications_settings_summary_active"
                     android:title="@string/notifications_settings_title_active" />
 
-                <ListPreference
+                <androidx.preference.ListPreference
                     android:title="@string/notifications_settings_title_time"
                     android:summary="@string/notifications_settings_summary_time"
                     android:key="notification_time"
                     android:entryValues="@array/list_values_time"
                     android:entries="@array/list_entries_time"/>
-                <ListPreference
+                <androidx.preference.ListPreference
                     android:title="@string/notifications_settings_title_kind"
                     android:summary="@string/notifications_settings_summary_kind"
                     android:key="notification_kind"
                     android:entryValues="@array/list_values_kind"
                     android:entries="@array/list_entries_kind"/>
-        </PreferenceCategory>
-</PreferenceScreen>
+        </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

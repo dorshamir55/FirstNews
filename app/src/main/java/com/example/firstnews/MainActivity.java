@@ -49,13 +49,13 @@ public class MainActivity extends AppCompatActivity {
 
         //prefSwitch =
 
-        TextView textView = findViewById(R.id.main_title_tv);
+        /*TextView textView = findViewById(R.id.main_title_tv);
         textView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
                                             callNotification();
                                         }
-                                    });
+                                    });*/
                 /*alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
                 int time=0;
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(v.getContext());
@@ -118,10 +118,7 @@ public class MainActivity extends AppCompatActivity {
         }
      }
 
-     public void callNotification(){
-         Intent intent = new Intent(this, BackgroundNotificationService.class);
-         startService(intent);
-     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
