@@ -47,10 +47,11 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
         int time=0;
         SharedPreferences sp = android.preference.PreferenceManager.getDefaultSharedPreferences(this);
-        String choiceTime = sp.getString("notification_time", "2");
+        String choiceTime = sp.getString("notification_time", "3");
+        String choiceKind = sp.getString("notification_kind", "3" );
         boolean switched = sp.getBoolean("notification_active", false);
 
-        if(switched) {
+        if(switched & (choiceTime.equals("0") | choiceTime.equals("1") | choiceTime.equals("2")) & (choiceKind.equals("0") | choiceKind.equals("1"))) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -77,7 +78,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
 
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + time * 1000, pendingIntent);
         }
-        else{
+        else if ((choiceTime.equals("0") | choiceTime.equals("1") | choiceTime.equals("2")) & (choiceKind.equals("0") | choiceKind.equals("1"))){
             if(flagToastCancel) {
                 handler.post(new Runnable() {
                     @Override
