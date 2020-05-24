@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -133,6 +134,94 @@ public class WeatherFragment extends android.app.Fragment {
         client.requestLocationUpdates(locationRequest, callback, null);
     }
 
+    public static void startLastLocationAndWeather(){
+        geocoder = new Geocoder(context);
+        client = LocationServices.getFusedLocationProviderClient(context);
+        LocationCallback callback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                Location lastlocation = locationResult.getLastLocation();
+                getLastWeather(lastlocation.getLatitude(), lastlocation.getLongitude());
+            }
+        };
+
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        client.requestLocationUpdates(locationRequest, callback, null);
+    }
+
+    private static void getLastWeather(Double lati, Double longi) {
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK + "&lat=" + lati + "&lon=" + longi +"&units=metric"+"&lang=he", null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    //JSONObject rootObject = new JSONObject(response);
+                    JSONObject cityObject = response.getJSONObject("city");
+                    city = cityObject.getString("name");
+
+                    //cityTv = cityTv.findViewById(R.id.weather_title_tv);
+                    //cityTv.setText("מזג האוויר ב"+city);
+
+                    //JSONObject listObject = response.getJSONObject("list");
+                    JSONArray listArray = response.getJSONArray("list");
+                    JSONObject currentElementObject = listArray.getJSONObject(0);
+                    String dateAndTime = currentElementObject.getString("dt_txt");
+                    String date = dateAndTime.substring(8,10)+"."+dateAndTime.substring(5,7);
+                    if(date.substring(3,4).equals("0")){
+                        date = date.substring(0,3)+date.substring(4,5);
+                    }
+
+                    String time = dateAndTime.substring(11,16);
+
+                    JSONObject mainObject = currentElementObject.getJSONObject("main");
+                    Double cel = Double.parseDouble(mainObject.getString("temp"));
+                    String celsius = "\u2103"+cel;
+
+                    JSONObject weatherObject = currentElementObject.getJSONArray("weather").getJSONObject(0);
+                    String description = weatherObject.getString("description");
+
+                    String icon = BASE_URL_IMG+weatherObject.getString("icon")+".png";
+
+                    String year = dateAndTime.substring(0,4);
+                    String day = dateAndTime.substring(8,10);
+                    String month = dateAndTime.substring(5,7);
+
+                    String dayFromDate = Day.getDayFromDate(day, month, year);
+
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+                    SharedPreferences.Editor prefEditor = sp.edit();
+                    prefEditor.putString("dayFromDate_weather", dayFromDate);
+                    prefEditor.putString("date_weather", date);
+                    prefEditor.putString("time_weather", icon);
+                    prefEditor.putString("celsius_weather", celsius);
+                    prefEditor.putString("description_weather", description);
+                    prefEditor.putString("icon_weather", icon);
+                    prefEditor.putString("city_weather", city);
+                    prefEditor.commit();
+
+                    //lastWeather = new Weather(dayFromDate, date, time, celsius, description, icon);
+
+                    //weatherList = new ArrayList<Weather>();
+                    //String imageUri = "drawable://" + R.drawable.ic_launcher_background;
+                    //weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(request);
+        queue.start();
+    }
+
     private static void getWeather(Double lati, Double longi) {
 
         RequestQueue queue = Volley.newRequestQueue(context);
@@ -187,7 +276,6 @@ public class WeatherFragment extends android.app.Fragment {
                     //weatherList = new ArrayList<Weather>();
                     //String imageUri = "drawable://" + R.drawable.ic_launcher_background;
                     //weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

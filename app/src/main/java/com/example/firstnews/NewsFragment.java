@@ -6,6 +6,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
@@ -23,6 +24,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -97,6 +99,77 @@ public class NewsFragment extends android.app.Fragment {
         return root;
     }
 
+    public static void getLastNews(){
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK +"", null, new Response.Listener<JSONObject>() {
+
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    //JSONObject rootObject = new JSONObject(response);
+                    //JSONObject listObject = response.getJSONObject("articles");
+
+                    //sportTv = sportTv.findViewById(R.id.news_title_tv);
+                    //sportTv.setText(R.string.sport_title);
+
+                    JSONArray articlesArray = response.getJSONArray("articles");
+                    int i=0;
+                    JSONObject currentElementObject = articlesArray.getJSONObject(i);
+                    while(currentElementObject.getJSONObject("source").getString("name").equals("Israelhayom.co.il")){
+                        i++;
+                        currentElementObject = articlesArray.getJSONObject(i);
+                    }
+                    String title = currentElementObject.getString("title");
+
+                    String date = currentElementObject.getString("publishedAt");
+                    String part1 = date.substring(11,16);
+                    String part2 = date.substring(0,4)+"."+date.substring(5,7)+"."+date.substring(8,10);
+                    if(date.substring(5,6).equals("0")){
+                        part2 = date.substring(8,10)+"."+date.substring(6,7)+"."+date.substring(0,4);
+                    }
+                    if(part1.substring(0,1).equals("0")){
+                        part1 = date.substring(12,16);
+                    }
+                    date = part1+"  "+part2;
+                    String description = currentElementObject.getString("description");
+                    if(description.equals("null")){
+                        description="";
+                    }
+
+                    String icon = currentElementObject.getString("urlToImage");
+                        /*if(icon.equals("null")){
+                            icon = DEFAULT_ICON;
+                        }*/
+
+                    String webUrl = currentElementObject.getString("url");
+
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+                    SharedPreferences.Editor prefEditor = sp.edit();
+                    prefEditor.putString("title_news", title);
+                    prefEditor.putString("description_news", description);
+                    prefEditor.putString("icon_news", icon);
+                    prefEditor.putString("date_news", date);
+                    prefEditor.putString("wenUrl_news", webUrl);
+                    prefEditor.commit();
+
+                    //lastNews = new News(title, description, icon, date, webUrl);
+
+                    //final News lastNews = newsList.get(0);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        queue.add(request);
+        queue.start();
+    }
+
     public static void getNews() {
 
         RequestQueue queue = Volley.newRequestQueue(context);
@@ -167,7 +240,7 @@ public class NewsFragment extends android.app.Fragment {
         queue.start();
     }
 
-    public static News getLastNews(){
+    public static News getLastNew(){
         return lastNews;
     }
 }

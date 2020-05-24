@@ -16,6 +16,8 @@ import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreference;
 import androidx.preference.SwitchPreferenceCompat;
 
+import java.util.Calendar;
+
 public class SettingsActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     final int PENDING_ID = 5;
     AlarmManager alarmManager;
@@ -73,10 +75,12 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     time = 10;
                     break;
             }
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.SECOND, time);
 
             PendingIntent pendingIntent = PendingIntent.getBroadcast(SettingsActivity.this, PENDING_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + time * 1000, pendingIntent);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
         else if ((choiceTime.equals("0") | choiceTime.equals("1") | choiceTime.equals("2")) & (choiceKind.equals("0") | choiceKind.equals("1"))){
             if(flagToastCancel) {

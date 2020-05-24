@@ -22,6 +22,8 @@ import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 
+import java.util.Calendar;
+
 import static android.content.Context.ALARM_SERVICE;
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static androidx.core.content.ContextCompat.getSystemService;
@@ -39,6 +41,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     Weather weather;
     String city;
     NotificationManager manager;
+    Handler handler = new Handler();
 
     FusedLocationProviderClient client;
     Geocoder geocoder;
@@ -94,40 +97,68 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         switch(choiceKind) {
             case("0"):
+                //News notification
 
-                news = NewsFragment.getLastNews();
+                NewsFragment newsFragment = NewsFragment.getInstance(context);
+                NewsFragment.getLastNews();
 
-                notification = builder.setContentTitle(news.getTitle())
-                        .setContentText(news.getDescription()).setAutoCancel(true).setSmallIcon(R.drawable.news_icon).build();
-                notification.defaults = Notification.DEFAULT_VIBRATE;
-                notification.flags |= Notification.FLAG_AUTO_CANCEL;
+                //news = NewsFragment.getLastNew();
 
-                notificationManager = (NotificationManager)
-                        context.getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.notify(NEWS_NOTIF, notification);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
+                        notification = builder.setContentTitle(sp.getString("title_news", "Title"))
+                                .setContentText(sp.getString("description_news", "Description"))
+                                .setAutoCancel(true).setSmallIcon(R.drawable.news_icon).build();
+                        notification.defaults = Notification.DEFAULT_VIBRATE;
+                        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+                        notificationManager = (NotificationManager)
+                                context.getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.notify(NEWS_NOTIF, notification);
+
+                    }
+                }, 2000);
+
                 break;
+
             case("1"):
+                //Weather notification
 
-                weather = WeatherFragment.getLastWeather();
+                WeatherFragment weatherFragment = WeatherFragment.getInstance(context);
+                WeatherFragment.startLastLocationAndWeather();
+
+                //weather = WeatherFragment.getLastWeather();
                 city = WeatherFragment.getLastLocation();
-
                 //builder = new Notification.Builder(context, channelId);
                 //builder.setContentIntent(openPendingIntent);
-                notification = builder.setContentTitle("מזג האוויר ב"+city)
-                        .setContentText(weather.getDescription()+" "+weather.getCelsius())
-                        .setAutoCancel(true).setSmallIcon(R.drawable.news_icon).build();
-                notification.defaults = Notification.DEFAULT_VIBRATE|Notification.DEFAULT_LIGHTS;
-                notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
-                notificationManager = (NotificationManager)
-                        context.getSystemService(Context.NOTIFICATION_SERVICE);
-                notificationManager.notify(WEATHER_NOTIF, notification);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+                        notification = builder.setContentTitle("מזג האוויר ב"+sp.getString("city_weather", "City"))
+                                .setContentText(sp.getString("description_weather", "Description")+" "+sp.getString("celsius_weather", "Celsius"))
+                                .setAutoCancel(true).setSmallIcon(R.drawable.news_icon).build();
+                        notification.defaults = Notification.DEFAULT_VIBRATE|Notification.DEFAULT_LIGHTS;
+                        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+                        notificationManager = (NotificationManager)
+                                context.getSystemService(Context.NOTIFICATION_SERVICE);
+                        notificationManager.notify(WEATHER_NOTIF, notification);
+
+                    }
+                }, 2000);
 
                 break;
 
         }
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, time);
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + time * 1000, pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 
             /*if (choiceKind.equals(R.string.last_news)) {
                 //News
