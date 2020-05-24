@@ -270,6 +270,11 @@ public class WeatherFragment extends android.app.Fragment {
                         //weatheradapter.notifyItemInserted(i);
                     }
 
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+                    SharedPreferences.Editor prefEditor = sp.edit();
+                    prefEditor.putString("city_weather", city);
+                    prefEditor.commit();
+
                     weatheradapter.notifyItemInserted(i-1);
 
                     lastWeather = weatherList.get(0);

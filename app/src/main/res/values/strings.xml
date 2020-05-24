@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">FirstNews</string>
     <string name="main_title">First news</string>
-    <string name="sport_title">Sports</string>
+    <string name="sport_title">Sport news</string>
     <string name="weather_title">Weather</string>
     <string name="permission_title">Weather forecast failed!</string>
     <string name="location_settings">Get location permission</string>

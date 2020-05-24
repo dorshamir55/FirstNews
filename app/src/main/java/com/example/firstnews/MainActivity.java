@@ -10,16 +10,19 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.MenuCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import android.Manifest;
 import android.app.AlarmManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.SwitchPreference;
 import android.provider.Settings;
@@ -72,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         getFragmentManager().beginTransaction().add(R.id.frame_container2, newsFragment, "news_fragment").commit();
+        setSportTitle();
 
         //final Intent intent = new Intent(MainActivity.this, NotificationService.class);
         //startService(intent);
@@ -83,14 +87,37 @@ public class MainActivity extends AppCompatActivity {
             }
             else {
                 getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, "weather_fragment").commit();
+                setCity();
             }
         }
         else {
             getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, "weather_fragment").commit();
+            setCity();
         }
     }
 
+    public void setCity(){
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                TextView textView = findViewById(R.id.weather_title_tv);
+                textView.setText("מזג האוויר ב"+sp.getString("city_weather", "City"));
+            }
+        });
+    }
 
+    public void setSportTitle(){
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                TextView textView = findViewById(R.id.news_title_tv);
+                textView.setText(R.string.sport_title);
+                //textView.setText(sp.getString("sport", "חדשות הספורט"));
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -198,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
                 WeatherFragment weatherFragment = WeatherFragment.getInstance(this);
                 WeatherFragment.startLocationAndWeather();
                 getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, "weather_fragment").commit();
+                setCity();
             }
         }
     }

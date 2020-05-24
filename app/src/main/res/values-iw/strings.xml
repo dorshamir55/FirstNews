@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">FirstNews</string>
     <string name="main_title">הראשון בחדשות</string>
-    <string name="sport_title">ספורט</string>
+    <string name="sport_title">חדשות הספורט</string>
     <string name="weather_title">מזג אוויר</string>
     <string name="permission_msg">כדי לצפות בתחזית מזג האוויר את/ה חייב/ת לאשר הרשאות מיקום</string>
     <string name="permission_title">תחזית מזג האוויר נכשלה!</string>

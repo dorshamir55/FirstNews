@@ -220,6 +220,13 @@ public class NewsFragment extends android.app.Fragment {
                         newsList.add(news);
                         //weatheradapter.notifyItemInserted(i);
                     }
+
+                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+                    SharedPreferences.Editor prefEditor = sp.edit();
+                    String sport = String.valueOf(R.string.sport_title);
+                    prefEditor.putString("city_news", sport);
+                    prefEditor.commit();
+
                     newsAdapter.notifyItemInserted(i-1);
 
                     lastNews = newsList.get(0);
