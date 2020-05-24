@@ -4,9 +4,9 @@
     <string name="main_title">הראשון בחדשות</string>
     <string name="sport_title">ספורט</string>
     <string name="weather_title">מזג אוויר</string>
-    <string name="error">שגיאה!</string>
-    <string name="permission_msg">האפליקציה חייבת הרשאות מיקום</string>
-    <string name="location_settings">הגדרות מיקום</string>
+    <string name="permission_msg">כדי לצפות בתחזית מזג האוויר את/ה חייב/ת לאשר הרשאות מיקום</string>
+    <string name="permission_title">תחזית מזג האוויר נכשלה!</string>
+    <string name="location_settings">קבל הרשאות מיקום</string>
     <string name="quit">יציאה</string>
     <string name="wait">טוען...</string>
     <string name="notifications_settings">הגדרות התראות</string>
@@ -24,4 +24,5 @@
     <string name="notifications_settings_summary_active">בחר להפעלת ההתראה</string>
     <string name="notification_active">התראה הופעלה</string>
     <string name="notification_cancel">התראה בוטלה</string>
+    <string name="weather_not_available">מזג האוויר לא זמין!</string>
 </resources>

@@ -3,9 +3,8 @@
     <string name="main_title">First news</string>
     <string name="sport_title">Sports</string>
     <string name="weather_title">Weather</string>
-    <string name="error">Error!</string>
-    <string name="permission_msg">The application must have location permission</string>
-    <string name="location_settings">Location ettings</string>
+    <string name="permission_title">Weather forecast failed!</string>
+    <string name="location_settings">Get location permission</string>
     <string name="quit">Quit</string>
     <string name="wait">wait...</string>
     <string name="notifications_settings">Notifications settings</string>
@@ -45,6 +44,8 @@
     <string name="notifications_settings_summary_active">Select to active the notification</string>
     <string name="notification_active">Notification activated</string>
     <string name="notification_cancel">Notification cancelled</string>
+    <string name="permission_msg">In order to watch the weather forecast you must confirm location permissions</string>
+    <string name="weather_not_available">Weather not available!</string>
 
 
 </resources>

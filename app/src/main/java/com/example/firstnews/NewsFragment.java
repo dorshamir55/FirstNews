@@ -12,6 +12,7 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,27 +43,39 @@ import java.util.List;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
+@SuppressLint("ValidFragment")
 public class NewsFragment extends android.app.Fragment {
-    private List<News> newsList;
-    NewsAdapter newsAdapter;
-    NotificationManager manager;
+    public static NewsFragment instance;
+    private static Context context;
+    static private List<News> newsList;
+    static NewsAdapter newsAdapter;
     static News lastNews;
 
-    Context context;
-    final String BASE_LINK = "http://newsapi.org/v2/top-headlines?country=il&category=sports&apiKey=77d0acf9be214ed4b7c4c438e081d389";
+    static final String BASE_LINK = "http://newsapi.org/v2/top-headlines?country=il&category=sports&apiKey=77d0acf9be214ed4b7c4c438e081d389";
     //final String DEFAULT_ICON="https://cdn3.iconfinder.com/data/icons/iconano-text-editor/512/005-X-512.png";
     //final int NOTIFICATION_ID = 3;
-    TextView sportTv;
+    static TextView sportTv;
 
-    public NewsFragment(){
+    public NewsFragment(Context context){
         newsList = new ArrayList<>();
-        this.context=getActivity();
+        this.context=context;
     }
+
+    public static NewsFragment getInstance(Context context){
+        if(instance==null){
+            instance = new NewsFragment(context);
+        }
+        return  instance;
+    }
+
+    //getFragmentManager().beginTransaction().add(R.id.frame_container1, new WeatherFragment(), "weather_fragment").commit();
+    //getFragmentManager().beginTransaction().add(R.id.frame_container2, new NewsFragment(), "news_fragment").commit();
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         getNews();
+        //SystemClock.sleep(500);
         View root = inflater.inflate(R.layout.news_fragment, container, false);
         //SystemClock.sleep(800);
         final RecyclerView recyclerView = root.findViewById(R.id.news_recycler);
@@ -84,9 +97,9 @@ public class NewsFragment extends android.app.Fragment {
         return root;
     }
 
-    private void getNews() {
+    public static void getNews() {
 
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        RequestQueue queue = Volley.newRequestQueue(context);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK +"", null, new Response.Listener<JSONObject>() {
 
             @Override
@@ -94,8 +107,10 @@ public class NewsFragment extends android.app.Fragment {
                 try {
                     //JSONObject rootObject = new JSONObject(response);
                     //JSONObject listObject = response.getJSONObject("articles");
-                    sportTv = getView().findViewById(R.id.news_title_tv);
-                    sportTv.setText(R.string.sport_title);
+
+                    //sportTv = sportTv.findViewById(R.id.news_title_tv);
+                    //sportTv.setText(R.string.sport_title);
+
                     JSONArray articlesArray = response.getJSONArray("articles");
                     int i;
                     for(i=0; i<articlesArray.length();i++){

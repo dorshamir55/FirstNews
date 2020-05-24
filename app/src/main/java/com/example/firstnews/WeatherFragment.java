@@ -1,5 +1,6 @@
 package com.example.firstnews;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Geocoder;
@@ -43,10 +44,12 @@ import java.util.TimerTask;
 
 import static android.content.Context.MODE_PRIVATE;
 
+@SuppressLint("ValidFragment")
 public class WeatherFragment extends android.app.Fragment {
-    private List<Weather> weatherList;
-    WeatherAdapter weatheradapter;
-    Context context;
+    public static WeatherFragment instance;
+    private static List<Weather> weatherList;
+    static WeatherAdapter weatheradapter;
+    static Context context;
     Timer timer;
     Handler handler = new Handler();
     static Weather lastWeather;
@@ -55,12 +58,12 @@ public class WeatherFragment extends android.app.Fragment {
     private Double lat;
     private Double lon;
 
-    FusedLocationProviderClient client;
-    Geocoder geocoder;
-    TextView cityTv;
+    static FusedLocationProviderClient client;
+    static Geocoder geocoder;
+    static TextView cityTv;
 
-    final String BASE_LINK = "http://api.openweathermap.org/data/2.5/forecast?appid=2f976482fabfb93ba421d2df01470e6c";
-    final String BASE_URL_IMG = "http://openweathermap.org/img/w/";
+    static final String BASE_LINK = "http://api.openweathermap.org/data/2.5/forecast?appid=2f976482fabfb93ba421d2df01470e6c";
+    static final String BASE_URL_IMG = "http://openweathermap.org/img/w/";
 
     /*public static WeatherFragment newInstance (int num){
         WeatherFragment weatherFragment = new WeatherFragment();
@@ -70,9 +73,16 @@ public class WeatherFragment extends android.app.Fragment {
         return weatherFragment;
     }*/
 
-    public WeatherFragment(){
+    public WeatherFragment(Context context){
         weatherList = new ArrayList<>();
-        this.context=getActivity();
+        this.context=context;
+    }
+
+    public static WeatherFragment getInstance(Context context){
+        if(instance==null){
+            instance = new WeatherFragment(context);
+        }
+        return  instance;
     }
 
     /*public static WeatherFragment newInstance(List<Weather> i_weatherList){
@@ -86,7 +96,7 @@ public class WeatherFragment extends android.app.Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         startLocationAndWeather();
-
+        //SystemClock.sleep(500);
         View root = inflater.inflate(R.layout.weather_fragment, container, false);
         //SystemClock.sleep(800);
         final RecyclerView recyclerView = root.findViewById(R.id.weather_recycler);
@@ -99,15 +109,16 @@ public class WeatherFragment extends android.app.Fragment {
 
         weatheradapter = new WeatherAdapter(weatherList);
         recyclerView.setAdapter(weatheradapter);
+
         //weatheradapter.notifyDataSetChanged();
         //weatheradapter.notifyItemInserted(39);
         return root;
     }
 
-    public void startLocationAndWeather(){
+    public static void startLocationAndWeather(){
 
-        geocoder = new Geocoder(getActivity());
-        client = LocationServices.getFusedLocationProviderClient(getActivity());
+        geocoder = new Geocoder(context);
+        client = LocationServices.getFusedLocationProviderClient(context);
         LocationCallback callback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -122,9 +133,9 @@ public class WeatherFragment extends android.app.Fragment {
         client.requestLocationUpdates(locationRequest, callback, null);
     }
 
-    private void getWeather(Double lati, Double longi) {
+    private static void getWeather(Double lati, Double longi) {
 
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        RequestQueue queue = Volley.newRequestQueue(context);
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK + "&lat=" + lati + "&lon=" + longi +"&units=metric"+"&lang=he", null, new Response.Listener<JSONObject>() {
 
             @Override
@@ -134,9 +145,9 @@ public class WeatherFragment extends android.app.Fragment {
                     JSONObject cityObject = response.getJSONObject("city");
                     city = cityObject.getString("name");
 
-                    cityTv = getView().findViewById(R.id.weather_title_tv);
-                    cityTv.setText("מזג האוויר ב"+city);
-                    //cityTv.setText(lat+", "+lon);
+                    //cityTv = cityTv.findViewById(R.id.weather_title_tv);
+                    //cityTv.setText("מזג האוויר ב"+city);
+
                     //JSONObject listObject = response.getJSONObject("list");
                     JSONArray listArray = response.getJSONArray("list");
                     int i;
@@ -169,6 +180,7 @@ public class WeatherFragment extends android.app.Fragment {
                         weatherList.add(weather);
                         //weatheradapter.notifyItemInserted(i);
                     }
+
                     weatheradapter.notifyItemInserted(i-1);
 
                     lastWeather = weatherList.get(0);
