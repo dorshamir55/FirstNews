@@ -77,34 +77,30 @@ public class NewsFragment extends android.app.Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        getNews();
         //SystemClock.sleep(500);
         View root = inflater.inflate(R.layout.news_fragment, container, false);
         final RecyclerView recyclerView = root.findViewById(R.id.news_recycler);
         //SystemClock.sleep(800);
-        new Handler().postDelayed(new Runnable() {
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false));
+
+        //sportTv = sportTv.findViewById(R.id.news_title_tv);
+        //sportTv.setText(R.string.sport_title);
+
+        newsAdapter = new NewsAdapter(newsList);
+
+        newsAdapter.setListener(new NewsAdapter.MyNewsListener() {
             @Override
-            public void run() {
-
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                        LinearLayoutManager.VERTICAL, false));
-
-                //sportTv = sportTv.findViewById(R.id.news_title_tv);
-                //sportTv.setText(R.string.sport_title);
-
-                newsAdapter = new NewsAdapter(newsList);
-
-                newsAdapter.setListener(new NewsAdapter.MyNewsListener() {
-                    @Override
-                    public void onNewsClicked(int position, View view, String url) {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        startActivity(browserIntent);
-                    }
-                });
-
-                recyclerView.setAdapter(newsAdapter);
+            public void onNewsClicked(int position, View view, String url) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(browserIntent);
             }
-        },2000);
+        });
+
+        recyclerView.setAdapter(newsAdapter);
+
+        getNews();
 
         return root;
     }
@@ -237,11 +233,11 @@ public class NewsFragment extends android.app.Fragment {
                     prefEditor.putString("city_news", sport);
                     prefEditor.commit();
 
-                    //newsAdapter.notifyItemInserted(i-1);
-
                     lastNews = newsList.get(0);
 
                     //final News lastNews = newsList.get(0);
+
+                    newsAdapter.notifyDataSetChanged();
 
                 } catch (JSONException e) {
                     e.printStackTrace();

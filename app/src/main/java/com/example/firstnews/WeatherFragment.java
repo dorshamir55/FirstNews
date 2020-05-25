@@ -98,7 +98,6 @@ public class WeatherFragment extends android.app.Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        startLocationAndWeather();
         //SystemClock.sleep(500);
         View root = inflater.inflate(R.layout.weather_fragment, container, false);
         //SystemClock.sleep(800);
@@ -108,18 +107,15 @@ public class WeatherFragment extends android.app.Fragment {
         //String imageUri = "drawable://" + R.drawable.ic_launcher_background;
         //weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
 
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                        LinearLayoutManager.HORIZONTAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false));
 
-                weatherAdapter = new WeatherAdapter(weatherList);
+        weatherAdapter = new WeatherAdapter(weatherList);
 
-                recyclerView.setAdapter(weatherAdapter);
-            }
-        },2000);
+        recyclerView.setAdapter(weatherAdapter);
+
+        startLocationAndWeather();
 
         //weatheradapter.notifyDataSetChanged();
         //weatheradapter.notifyItemInserted(39);
@@ -277,7 +273,7 @@ public class WeatherFragment extends android.app.Fragment {
 
                         Weather weather = new Weather(dayFromDate, date, time, celsius, description, icon);
                         weatherList.add(weather);
-                        weatherAdapter.notifyItemInserted(i);
+                        //weatherAdapter.notifyItemInserted(i);
                     }
 
                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -288,6 +284,9 @@ public class WeatherFragment extends android.app.Fragment {
                     //weatheradapter.notifyItemInserted(i-1);
 
                     lastWeather = weatherList.get(0);
+
+                    weatherAdapter.notifyDataSetChanged();
+
                     //weatherList = new ArrayList<Weather>();
                     //String imageUri = "drawable://" + R.drawable.ic_launcher_background;
                     //weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));

@@ -75,12 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         getFragmentManager().beginTransaction().add(R.id.frame_container2, newsFragment, NEWS_FRAGMENT).commit();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                setSportTitle();
-            }
-        },2100);
+        setSportTitle();
 
         //final Intent intent = new Intent(MainActivity.this, NotificationService.class);
         //startService(intent);
@@ -92,22 +87,12 @@ public class MainActivity extends AppCompatActivity {
             }
             else {
                 getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setCity();
-                    }
-                },2100);
+                setCity();
             }
         }
         else {
             getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    setCity();
-                }
-            },2100);
+            setCity();
         }
     }
 
@@ -205,12 +190,7 @@ public class MainActivity extends AppCompatActivity {
                 WeatherFragment weatherFragment = WeatherFragment.getInstance(this);
 
                 getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setCity();
-                    }
-                },2100);
+                setCity();
             }
         }
     }
