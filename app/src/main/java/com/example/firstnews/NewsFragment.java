@@ -218,7 +218,7 @@ public class NewsFragment extends android.app.Fragment {
 
                         News news = new News(title, description, icon, date, webUrl);
                         newsList.add(news);
-                        //weatheradapter.notifyItemInserted(i);
+                        newsAdapter.notifyItemInserted(i);
                     }
 
                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -227,7 +227,7 @@ public class NewsFragment extends android.app.Fragment {
                     prefEditor.putString("city_news", sport);
                     prefEditor.commit();
 
-                    newsAdapter.notifyItemInserted(i-1);
+                    //newsAdapter.notifyItemInserted(i-1);
 
                     lastNews = newsList.get(0);
 

@@ -4,13 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.menu.MenuItemImpl;
-import androidx.appcompat.widget.MenuItemHoverListener;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.MenuCompat;
-import androidx.core.view.MenuItemCompat;
-import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.AlarmManager;
@@ -23,8 +19,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
-import android.preference.SwitchPreference;
 import android.provider.Settings;
 import android.view.Gravity;
 import android.view.Menu;
@@ -64,18 +58,27 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setCustomView(textView);
         //Intent intent = new Intent(this, BackgroundNotificationService.class);
+        NewsFragment newsFragment = NewsFragment.getInstance(this);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                NewsFragment.getNews();
+            }
+        }, 1000);
+
 
         WeatherFragment weatherFragment = WeatherFragment.getInstance(this);
-        NewsFragment newsFragment = NewsFragment.getInstance(this);
-
-        NewsFragment.getNews();
-
         WeatherFragment.startLocationAndWeather();
         //SystemClock.sleep(500);
 
 
         getFragmentManager().beginTransaction().add(R.id.frame_container2, newsFragment, "news_fragment").commit();
-        setSportTitle();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setSportTitle();
+            }
+        },1000);
 
         //final Intent intent = new Intent(MainActivity.this, NotificationService.class);
         //startService(intent);
@@ -87,12 +90,34 @@ public class MainActivity extends AppCompatActivity {
             }
             else {
                 getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, "weather_fragment").commit();
-                setCity();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setCity();
+                    }
+                },1000);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setCity();
+                    }
+                },1000);
             }
         }
         else {
             getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, "weather_fragment").commit();
-            setCity();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setCity();
+                }
+            },1000);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setCity();
+                }
+            },1000);
         }
     }
 
@@ -102,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                 TextView textView = findViewById(R.id.weather_title_tv);
-                textView.setText("מזג האוויר ב"+sp.getString("city_weather", "City"));
+                textView.setText("מזג האוויר ב"+sp.getString("city_weather", "מיקומך"));
             }
         });
     }
@@ -149,50 +174,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==SETTINGS_REQUEST){
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-            String choiceTime = sp.getString("notification_time", "0");
-            String choiceKind = sp.getString("notification_kind", "0");
-            int time=0;
-            if(choiceKind.equals(R.string.last_news)) {
-                switch (choiceTime) {
-                    case "0":
-                        //never
-                        break;
-                    case "1":
-                        //60 sec
-                        time = 6000;
-                        break;
-                    case "2":
-                        //30 min
-                        break;
-                    case "3":
-                        //1 hour
-                        break;
-                }
-            }
-            else{
-                switch (choiceTime) {
-                    case "0":
-                        //never
-                        break;
-                    case "1":
-                        //60 sec
-                        break;
-                    case "2":
-                        //30 min
-                        break;
-                    case "3":
-                        //1 hour
-                        break;
-                }
-            }
-        }
-    }*/
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -223,9 +204,20 @@ public class MainActivity extends AppCompatActivity {
             }
             else {
                 WeatherFragment weatherFragment = WeatherFragment.getInstance(this);
-                WeatherFragment.startLocationAndWeather();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        WeatherFragment.startLocationAndWeather();
+                    }
+                },1000);
                 getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, "weather_fragment").commit();
-                setCity();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        setCity();
+
+                    }
+                },1000);
             }
         }
     }

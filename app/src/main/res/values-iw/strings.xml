@@ -8,7 +8,7 @@
     <string name="permission_title">תחזית מזג האוויר נכשלה!</string>
     <string name="location_settings">קבל הרשאות מיקום</string>
     <string name="quit">יציאה</string>
-    <string name="wait">טוען...</string>
+    <string name="loading">טוען...</string>
     <string name="notifications_settings">הגדרות התראות</string>
     <string name="notifications_settings_title_time">תדירות זמן</string>
     <string name="notifications_settings_summary_time">בחר את תדירות הזמן בה תופיע ההתראה</string>

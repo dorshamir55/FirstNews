@@ -30,7 +30,7 @@
                 android:id="@+id/weather_title_tv"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:text="@string/wait" />
+                android:text="@string/loading" />
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 

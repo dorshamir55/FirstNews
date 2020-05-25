@@ -267,7 +267,7 @@ public class WeatherFragment extends android.app.Fragment {
 
                         Weather weather = new Weather(dayFromDate, date, time, celsius, description, icon);
                         weatherList.add(weather);
-                        //weatheradapter.notifyItemInserted(i);
+                        weatheradapter.notifyItemInserted(i);
                     }
 
                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
@@ -275,7 +275,7 @@ public class WeatherFragment extends android.app.Fragment {
                     prefEditor.putString("city_weather", city);
                     prefEditor.commit();
 
-                    weatheradapter.notifyItemInserted(i-1);
+                    //weatheradapter.notifyItemInserted(i-1);
 
                     lastWeather = weatherList.get(0);
                     //weatherList = new ArrayList<Weather>();

@@ -6,7 +6,7 @@
     <string name="permission_title">Weather forecast failed!</string>
     <string name="location_settings">Get location permission</string>
     <string name="quit">Quit</string>
-    <string name="wait">wait...</string>
+    <string name="loading">Loading...</string>
     <string name="notifications_settings">Notifications settings</string>
     <string name="notifications_settings_title_time">Time frequency</string>
     <string name="notifications_settings_summary_time">Select the frequency of time when the notification appears\\nSelect notification - News/Weather</string>
