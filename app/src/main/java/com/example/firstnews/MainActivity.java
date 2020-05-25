@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     final int LOCATION_PERMISSION_REQUEST = 1;
     final int SETTINGS_REQUEST = 2;
     final int PENDING_ID = 5;
+    final String NEWS_FRAGMENT="news_fragment";
+    final String WEATHER_FRAGMENT="weather_fragment";
     AlarmManager alarmManager;
 
     Menu tempMenu;
@@ -59,26 +61,26 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setCustomView(textView);
         //Intent intent = new Intent(this, BackgroundNotificationService.class);
         NewsFragment newsFragment = NewsFragment.getInstance(this);
-        new Handler().postDelayed(new Runnable() {
+        /*new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 NewsFragment.getNews();
             }
-        }, 1000);
+        }, 1000);*/
 
 
         WeatherFragment weatherFragment = WeatherFragment.getInstance(this);
-        WeatherFragment.startLocationAndWeather();
+        //WeatherFragment.startLocationAndWeather();
         //SystemClock.sleep(500);
 
 
-        getFragmentManager().beginTransaction().add(R.id.frame_container2, newsFragment, "news_fragment").commit();
+        getFragmentManager().beginTransaction().add(R.id.frame_container2, newsFragment, NEWS_FRAGMENT).commit();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 setSportTitle();
             }
-        },1000);
+        },2100);
 
         //final Intent intent = new Intent(MainActivity.this, NotificationService.class);
         //startService(intent);
@@ -89,35 +91,23 @@ public class MainActivity extends AppCompatActivity {
                 requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST);
             }
             else {
-                getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, "weather_fragment").commit();
+                getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         setCity();
                     }
-                },1000);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        setCity();
-                    }
-                },1000);
+                },2100);
             }
         }
         else {
-            getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, "weather_fragment").commit();
+            getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     setCity();
                 }
-            },1000);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    setCity();
-                }
-            },1000);
+            },2100);
         }
     }
 
@@ -168,6 +158,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+        else if (item.getItemId()==R.id.icon_refresh) {
+            WeatherFragment weatherFragment = WeatherFragment.getInstance(MainActivity.this);
+            NewsFragment newsFragment = NewsFragment.getInstance(MainActivity.this);
+            //FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            //WeatherFragment.startLocationAndWeather();
+
+            //getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT);
+
+        }
         else if(item.getItemId()==R.id.action_notifications){
             startActivity(new Intent(this, SettingsActivity.class));
         }
@@ -204,20 +203,14 @@ public class MainActivity extends AppCompatActivity {
             }
             else {
                 WeatherFragment weatherFragment = WeatherFragment.getInstance(this);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        WeatherFragment.startLocationAndWeather();
-                    }
-                },1000);
-                getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, "weather_fragment").commit();
+
+                getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         setCity();
-
                     }
-                },1000);
+                },2100);
             }
         }
     }

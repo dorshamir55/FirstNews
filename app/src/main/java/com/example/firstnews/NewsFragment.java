@@ -13,6 +13,7 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,22 +80,31 @@ public class NewsFragment extends android.app.Fragment {
         getNews();
         //SystemClock.sleep(500);
         View root = inflater.inflate(R.layout.news_fragment, container, false);
-        //SystemClock.sleep(800);
         final RecyclerView recyclerView = root.findViewById(R.id.news_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.VERTICAL, false));
-
-        newsAdapter = new NewsAdapter(newsList);
-
-        newsAdapter.setListener(new NewsAdapter.MyNewsListener() {
+        //SystemClock.sleep(800);
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onNewsClicked(int position, View view, String url) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                startActivity(browserIntent);
-            }
-        });
+            public void run() {
 
-        recyclerView.setAdapter(newsAdapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                        LinearLayoutManager.VERTICAL, false));
+
+                //sportTv = sportTv.findViewById(R.id.news_title_tv);
+                //sportTv.setText(R.string.sport_title);
+
+                newsAdapter = new NewsAdapter(newsList);
+
+                newsAdapter.setListener(new NewsAdapter.MyNewsListener() {
+                    @Override
+                    public void onNewsClicked(int position, View view, String url) {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        startActivity(browserIntent);
+                    }
+                });
+
+                recyclerView.setAdapter(newsAdapter);
+            }
+        },2000);
 
         return root;
     }
@@ -218,7 +228,7 @@ public class NewsFragment extends android.app.Fragment {
 
                         News news = new News(title, description, icon, date, webUrl);
                         newsList.add(news);
-                        newsAdapter.notifyItemInserted(i);
+                        //newsAdapter.notifyItemInserted(i);
                     }
 
                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);

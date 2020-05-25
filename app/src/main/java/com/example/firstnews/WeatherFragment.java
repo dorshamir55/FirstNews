@@ -2,9 +2,11 @@ package com.example.firstnews;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -49,7 +51,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class WeatherFragment extends android.app.Fragment {
     public static WeatherFragment instance;
     private static List<Weather> weatherList;
-    static WeatherAdapter weatheradapter;
+    static WeatherAdapter weatherAdapter;
     static Context context;
     Timer timer;
     Handler handler = new Handler();
@@ -101,15 +103,23 @@ public class WeatherFragment extends android.app.Fragment {
         View root = inflater.inflate(R.layout.weather_fragment, container, false);
         //SystemClock.sleep(800);
         final RecyclerView recyclerView = root.findViewById(R.id.weather_recycler);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL, false));
 
         //weatherList = new ArrayList<Weather>();
         //String imageUri = "drawable://" + R.drawable.ic_launcher_background;
         //weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));
 
-        weatheradapter = new WeatherAdapter(weatherList);
-        recyclerView.setAdapter(weatheradapter);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                        LinearLayoutManager.HORIZONTAL, false));
+
+                weatherAdapter = new WeatherAdapter(weatherList);
+
+                recyclerView.setAdapter(weatherAdapter);
+            }
+        },2000);
 
         //weatheradapter.notifyDataSetChanged();
         //weatheradapter.notifyItemInserted(39);
@@ -267,7 +277,7 @@ public class WeatherFragment extends android.app.Fragment {
 
                         Weather weather = new Weather(dayFromDate, date, time, celsius, description, icon);
                         weatherList.add(weather);
-                        weatheradapter.notifyItemInserted(i);
+                        weatherAdapter.notifyItemInserted(i);
                     }
 
                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
