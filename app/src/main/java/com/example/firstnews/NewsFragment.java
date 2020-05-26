@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,50 +46,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
+import static com.example.firstnews.WeatherFragment.context;
 
-@SuppressLint("ValidFragment")
-public class NewsFragment extends android.app.Fragment {
-    public static NewsFragment instance;
-    private static Context context;
-    static private List<News> newsList;
-    static NewsAdapter newsAdapter;
-    static News lastNews;
+public class NewsFragment extends Fragment {
+    private List<News> newsList;
+    NewsAdapter newsAdapter;
 
-    static final String BASE_LINK = "http://newsapi.org/v2/top-headlines?country=il&category=sports&apiKey=77d0acf9be214ed4b7c4c438e081d389";
-    //final String DEFAULT_ICON="https://cdn3.iconfinder.com/data/icons/iconano-text-editor/512/005-X-512.png";
-    //final int NOTIFICATION_ID = 3;
-    static TextView sportTv;
-
-    public NewsFragment(Context context){
-        newsList = new ArrayList<>();
-        this.context=context;
-    }
-
-    public static NewsFragment getInstance(Context context){
-        if(instance==null){
-            instance = new NewsFragment(context);
-        }
-        return  instance;
-    }
-
-    //getFragmentManager().beginTransaction().add(R.id.frame_container1, new WeatherFragment(), "weather_fragment").commit();
-    //getFragmentManager().beginTransaction().add(R.id.frame_container2, new NewsFragment(), "news_fragment").commit();
+    final String BASE_LINK = "https://newsapi.org/v2/top-headlines?country=il&category=sports&apiKey=77d0acf9be214ed4b7c4c438e081d389";
+    final String DEFAULT_IMAGE ="https://aok.pte.hu/docs/felvi/image/sport-1.png";
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        //SystemClock.sleep(500);
+        Log.d("tag", "called onCreateView - News");
         View root = inflater.inflate(R.layout.news_fragment, container, false);
-        final RecyclerView recyclerView = root.findViewById(R.id.news_recycler);
-        //SystemClock.sleep(800);
+        RecyclerView recyclerView = root.findViewById(R.id.news_recycler);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.VERTICAL, false));
-
-        //sportTv = sportTv.findViewById(R.id.news_title_tv);
-        //sportTv.setText(R.string.sport_title);
-
-        newsAdapter = new NewsAdapter(newsList);
+        newsList =new ArrayList<>();
+        newsAdapter = new NewsAdapter(getActivity(), newsList);
+        recyclerView.setAdapter(newsAdapter);
 
         newsAdapter.setListener(new NewsAdapter.MyNewsListener() {
             @Override
@@ -97,7 +75,6 @@ public class NewsFragment extends android.app.Fragment {
                 startActivity(browserIntent);
             }
         });
-
         recyclerView.setAdapter(newsAdapter);
 
         getNews();
@@ -105,155 +82,91 @@ public class NewsFragment extends android.app.Fragment {
         return root;
     }
 
-    public static void getLastNews(){
-        RequestQueue queue = Volley.newRequestQueue(context);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK +"", null, new Response.Listener<JSONObject>() {
+    public void getNews() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray articlesArray = response.getJSONArray("articles");
+                            int i;
+                            for(i=0; i<articlesArray.length();i++){
 
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    //JSONObject rootObject = new JSONObject(response);
-                    //JSONObject listObject = response.getJSONObject("articles");
+                                JSONObject currentElementObject = articlesArray.getJSONObject(i);
+                                /*while(currentElementObject.getJSONObject("source").getString("name").equals("Israelhayom.co.il")){
+                                    i++;
+                                    currentElementObject = articlesArray.getJSONObject(i);
+                                }
+                                if(i<articlesArray.length()) {*/
 
-                    //sportTv = sportTv.findViewById(R.id.news_title_tv);
-                    //sportTv.setText(R.string.sport_title);
+                                News news = new News();
+                                news.setTitle(currentElementObject.getString("title"));
+                                news.setWebUrl(currentElementObject.getString("url"));
+                                String urlToImage = (currentElementObject.getString("urlToImage"));
+                                String description = (currentElementObject.getString("description"));
+                                news.setDescription(description);
+                                if(description.equals("null")){
+                                    news.setDescription("");
+                                }
+                                news.setImage(urlToImage);
+                                if(news.getImage().equals("null")){
+                                    news.setImage(DEFAULT_IMAGE);
+                                }
 
-                    JSONArray articlesArray = response.getJSONArray("articles");
-                    int i=0;
-                    JSONObject currentElementObject = articlesArray.getJSONObject(i);
-                    while(currentElementObject.getJSONObject("source").getString("name").equals("Israelhayom.co.il")){
-                        i++;
-                        currentElementObject = articlesArray.getJSONObject(i);
-                    }
-                    String title = currentElementObject.getString("title");
+                                //   String title = currentElementObject.getString("title");
+                                String date = currentElementObject.getString("publishedAt");
+                                String part1 = date.substring(11, 16);
+                                String part2 = date.substring(0, 4) + "." + date.substring(5, 7) + "." + date.substring(8, 10);
+                                if (date.substring(5, 6).equals("0")) {
+                                    part2 = date.substring(8, 10) + "." + date.substring(6, 7) + "." + date.substring(0, 4);
+                                }
+                                if (part1.substring(0, 1).equals("0")) {
+                                    part1 = date.substring(12, 16);
+                                }
+                                date = part1 + "  " + part2;
+                                news.setDate(date);
+//                                String description = currentElementObject.getString("description");
+//                                if(description.equals("null")){
+//                                    description="";
+//                                }
 
-                    String date = currentElementObject.getString("publishedAt");
-                    String part1 = date.substring(11,16);
-                    String part2 = date.substring(0,4)+"."+date.substring(5,7)+"."+date.substring(8,10);
-                    if(date.substring(5,6).equals("0")){
-                        part2 = date.substring(8,10)+"."+date.substring(6,7)+"."+date.substring(0,4);
-                    }
-                    if(part1.substring(0,1).equals("0")){
-                        part1 = date.substring(12,16);
-                    }
-                    date = part1+"  "+part2;
-                    String description = currentElementObject.getString("description");
-                    if(description.equals("null")){
-                        description="";
-                    }
-
-                    String icon = currentElementObject.getString("urlToImage");
+//                                String icon = currentElementObject.getString("urlToImage");
                         /*if(icon.equals("null")){
                             icon = DEFAULT_ICON;
                         }*/
 
-                    String webUrl = currentElementObject.getString("url");
+//                                    String webUrl = currentElementObject.getString("url");
 
-                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-                    SharedPreferences.Editor prefEditor = sp.edit();
-                    prefEditor.putString("title_news", title);
-                    prefEditor.putString("description_news", description);
-                    prefEditor.putString("icon_news", icon);
-                    prefEditor.putString("date_news", date);
-                    prefEditor.putString("wenUrl_news", webUrl);
-                    prefEditor.commit();
+//                                News news = new News(title, description, icon, date, webUrl);
+                                newsList.add(news);
+                                //newsAdapter.notifyItemInserted(i);
+                            }
+                            //}
 
-                    //lastNews = new News(title, description, icon, date, webUrl);
+//                            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+//                            SharedPreferences.Editor prefEditor = sp.edit();
+//                            String sport = String.valueOf(R.string.sport_title);
+//                            prefEditor.putString("city_news", sport);
+//                            prefEditor.commit();
 
-                    //final News lastNews = newsList.get(0);
+//                            lastNews = newsList.get(0);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        newsAdapter.notifyDataSetChanged();
+                    }
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
             }
         });
-        queue.add(request);
-        queue.start();
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(request);
     }
 
-    public static void getNews() {
-
-        RequestQueue queue = Volley.newRequestQueue(context);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK +"", null, new Response.Listener<JSONObject>() {
-
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    //JSONObject rootObject = new JSONObject(response);
-                    //JSONObject listObject = response.getJSONObject("articles");
-
-                    //sportTv = sportTv.findViewById(R.id.news_title_tv);
-                    //sportTv.setText(R.string.sport_title);
-
-                    JSONArray articlesArray = response.getJSONArray("articles");
-                    int i;
-                    for(i=0; i<articlesArray.length();i++){
-                        JSONObject currentElementObject = articlesArray.getJSONObject(i);
-                        while(currentElementObject.getJSONObject("source").getString("name").equals("Israelhayom.co.il")){
-                            i++;
-                            currentElementObject = articlesArray.getJSONObject(i);
-                        }
-                        String title = currentElementObject.getString("title");
-
-                        String date = currentElementObject.getString("publishedAt");
-                        String part1 = date.substring(11,16);
-                        String part2 = date.substring(0,4)+"."+date.substring(5,7)+"."+date.substring(8,10);
-                        if(date.substring(5,6).equals("0")){
-                            part2 = date.substring(8,10)+"."+date.substring(6,7)+"."+date.substring(0,4);
-                        }
-                        if(part1.substring(0,1).equals("0")){
-                            part1 = date.substring(12,16);
-                        }
-                        date = part1+"  "+part2;
-                        String description = currentElementObject.getString("description");
-                        if(description.equals("null")){
-                            description="";
-                        }
-
-                        String icon = currentElementObject.getString("urlToImage");
-                        /*if(icon.equals("null")){
-                            icon = DEFAULT_ICON;
-                        }*/
-
-                        String webUrl = currentElementObject.getString("url");
-
-                        News news = new News(title, description, icon, date, webUrl);
-                        newsList.add(news);
-                        //newsAdapter.notifyItemInserted(i);
-                    }
-
-                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-                    SharedPreferences.Editor prefEditor = sp.edit();
-                    String sport = String.valueOf(R.string.sport_title);
-                    prefEditor.putString("city_news", sport);
-                    prefEditor.commit();
-
-                    lastNews = newsList.get(0);
-
-                    //final News lastNews = newsList.get(0);
-
-                    newsAdapter.notifyDataSetChanged();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        queue.add(request);
-        queue.start();
-    }
-
-    public static News getLastNew(){
-        return lastNews;
-    }
+//    public static News getLastNew(){
+//        return lastNews;
+//    }
 }

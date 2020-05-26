@@ -7,24 +7,10 @@ public class News {
     String date;
     String webUrl;
 
-    public News(String title, String description, String image, String date, String webUrl) {
-        this.title = title;
-        this.description = description;
-        this.image = image;
-        this.date = date;
-        this.webUrl = webUrl;
+
+    public News() {
     }
 
-    @Override
-    public String toString() {
-        return "News{" +
-                "title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", image='" + image + '\'' +
-                ", date='" + date + '\'' +
-                ", webUrl='" + webUrl + '\'' +
-                '}';
-    }
 
     public String getTitle() {
         return title;

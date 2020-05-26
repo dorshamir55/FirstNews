@@ -23,6 +23,10 @@ public class Weather {
         this.image = image;
     }
 
+    public Weather() {
+
+    }
+
     @Override
     public String toString() {
         return "Weather{" +

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,269 +48,101 @@ import java.util.TimerTask;
 
 import static android.content.Context.MODE_PRIVATE;
 
-@SuppressLint("ValidFragment")
-public class WeatherFragment extends android.app.Fragment {
-    public static WeatherFragment instance;
+public class WeatherFragment extends Fragment {
     private static List<Weather> weatherList;
     static WeatherAdapter weatherAdapter;
     static Context context;
-    Timer timer;
-    Handler handler = new Handler();
-    static Weather lastWeather;
+
     static String city;
-
-    private Double lat;
-    private Double lon;
-
-    static FusedLocationProviderClient client;
-    static Geocoder geocoder;
-    static TextView cityTv;
+    private String lat;
+    private String lon;
 
     static final String BASE_LINK = "http://api.openweathermap.org/data/2.5/forecast?appid=2f976482fabfb93ba421d2df01470e6c";
     static final String BASE_URL_IMG = "http://openweathermap.org/img/w/";
 
-    /*public static WeatherFragment newInstance (int num){
-        WeatherFragment weatherFragment = new WeatherFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt("day", num);
-        weatherFragment.setArguments(bundle);
-        return weatherFragment;
-    }*/
-
-    public WeatherFragment(Context context){
-        weatherList = new ArrayList<>();
-        this.context=context;
-    }
-
-    public static WeatherFragment getInstance(Context context){
-        if(instance==null){
-            instance = new WeatherFragment(context);
-        }
-        return  instance;
-    }
-
-    /*public static WeatherFragment newInstance(List<Weather> i_weatherList){
-        WeatherFragment weatherFragment = new WeatherFragment();
-        weatherList=i_weatherList;
-        return weatherFragment;
-    }*/
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        //SystemClock.sleep(500);
+        Log.d("tag", "onCreateView - Weather");
         View root = inflater.inflate(R.layout.weather_fragment, container, false);
-        //SystemClock.sleep(800);
-        final RecyclerView recyclerView = root.findViewById(R.id.weather_recycler);
-
-        //weatherList = new ArrayList<Weather>();
-        //String imageUri = "drawable://" + R.drawable.ic_launcher_background;
-        //weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));
-
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL, false));
-
-        weatherAdapter = new WeatherAdapter(weatherList);
-
+        RecyclerView recyclerView = root.findViewById(R.id.weather_recycler);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        Log.d("tag", "After RecyclerView");
+        SharedPreferences sp = android.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
+        lat = sp.getString("latitude","32.0905");
+        lon = sp.getString("longitude","34.7749");
+        Log.d("tag", lat+", "+lon);
+        weatherList = new ArrayList<>();
+        weatherAdapter = new WeatherAdapter(getActivity(), weatherList);
         recyclerView.setAdapter(weatherAdapter);
 
-        startLocationAndWeather();
+        getWeather();
 
-        //weatheradapter.notifyDataSetChanged();
-        //weatheradapter.notifyItemInserted(39);
         return root;
     }
 
-    public static void startLocationAndWeather(){
+    private void getWeather() {
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK + "&lat=" + lat + "&lon=" + lon +"&units=metric"+"&lang=he", null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONObject cityObject = response.getJSONObject("city");
+                            city = cityObject.getString("name");
+                            JSONArray listArray = response.getJSONArray("list");
+                            int i;
+                            for(i=0; i<listArray.length();i++){
+                                JSONObject currentElementObject = listArray.getJSONObject(i);
+                                Weather weather = new Weather();
 
-        geocoder = new Geocoder(context);
-        client = LocationServices.getFusedLocationProviderClient(context);
-        LocationCallback callback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-                Location lastlocation = locationResult.getLastLocation();
-                getWeather(lastlocation.getLatitude(), lastlocation.getLongitude());
-            }
-        };
+                                String dateAndTime = currentElementObject.getString("dt_txt");
+                                String date = dateAndTime.substring(8,10)+"."+dateAndTime.substring(5,7);
+                                if(date.substring(3,4).equals("0")){
+                                    date = date.substring(0,3)+date.substring(4,5);
+                                }
 
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        client.requestLocationUpdates(locationRequest, callback, null);
-    }
+                                String time = dateAndTime.substring(11,16);
+                                weather.setDate(date);
+                                weather.setTime(time);
 
-    public static void startLastLocationAndWeather(){
-        geocoder = new Geocoder(context);
-        client = LocationServices.getFusedLocationProviderClient(context);
-        LocationCallback callback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-                Location lastlocation = locationResult.getLastLocation();
-                getLastWeather(lastlocation.getLatitude(), lastlocation.getLongitude());
-            }
-        };
+                                JSONObject mainObject = currentElementObject.getJSONObject("main");
+                                Double cel = Double.parseDouble(mainObject.getString("temp"));
+                                String celsius = "\u2103"+cel;
+                                weather.setCelsius(celsius);
+                                JSONObject weatherObject = currentElementObject.getJSONArray("weather").getJSONObject(0);
+                                String description = weatherObject.getString("description");
+                                weather.setDescription(description);
+                                String icon = BASE_URL_IMG+weatherObject.getString("icon")+".png";
+                                weather.setImage(icon);
+                                String year = dateAndTime.substring(0,4);
+                                String day = dateAndTime.substring(8,10);
+                                String month = dateAndTime.substring(5,7);
 
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        client.requestLocationUpdates(locationRequest, callback, null);
-    }
+                                String dayFromDate = Day.getDayFromDate(day, month, year);
+                                weather.setDay(dayFromDate);
+                                weatherList.add(weather);
+                            }
 
-    private static void getLastWeather(Double lati, Double longi) {
+                            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                            SharedPreferences.Editor prefEditor = sp.edit();
+                            prefEditor.putString("city_weather", city);
+                            prefEditor.commit();
 
-        RequestQueue queue = Volley.newRequestQueue(context);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK + "&lat=" + lati + "&lon=" + longi +"&units=metric"+"&lang=he", null, new Response.Listener<JSONObject>() {
+                            //lastWeather = weatherList.get(0);
 
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    //JSONObject rootObject = new JSONObject(response);
-                    JSONObject cityObject = response.getJSONObject("city");
-                    city = cityObject.getString("name");
-
-                    //cityTv = cityTv.findViewById(R.id.weather_title_tv);
-                    //cityTv.setText("מזג האוויר ב"+city);
-
-                    //JSONObject listObject = response.getJSONObject("list");
-                    JSONArray listArray = response.getJSONArray("list");
-                    JSONObject currentElementObject = listArray.getJSONObject(0);
-                    String dateAndTime = currentElementObject.getString("dt_txt");
-                    String date = dateAndTime.substring(8,10)+"."+dateAndTime.substring(5,7);
-                    if(date.substring(3,4).equals("0")){
-                        date = date.substring(0,3)+date.substring(4,5);
-                    }
-
-                    String time = dateAndTime.substring(11,16);
-
-                    JSONObject mainObject = currentElementObject.getJSONObject("main");
-                    Double cel = Double.parseDouble(mainObject.getString("temp"));
-                    String celsius = "\u2103"+cel;
-
-                    JSONObject weatherObject = currentElementObject.getJSONArray("weather").getJSONObject(0);
-                    String description = weatherObject.getString("description");
-
-                    String icon = BASE_URL_IMG+weatherObject.getString("icon")+".png";
-
-                    String year = dateAndTime.substring(0,4);
-                    String day = dateAndTime.substring(8,10);
-                    String month = dateAndTime.substring(5,7);
-
-                    String dayFromDate = Day.getDayFromDate(day, month, year);
-
-                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-                    SharedPreferences.Editor prefEditor = sp.edit();
-                    prefEditor.putString("dayFromDate_weather", dayFromDate);
-                    prefEditor.putString("date_weather", date);
-                    prefEditor.putString("time_weather", icon);
-                    prefEditor.putString("celsius_weather", celsius);
-                    prefEditor.putString("description_weather", description);
-                    prefEditor.putString("icon_weather", icon);
-                    prefEditor.putString("city_weather", city);
-                    prefEditor.commit();
-
-                    //lastWeather = new Weather(dayFromDate, date, time, celsius, description, icon);
-
-                    //weatherList = new ArrayList<Weather>();
-                    //String imageUri = "drawable://" + R.drawable.ic_launcher_background;
-                    //weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        queue.add(request);
-        queue.start();
-    }
-
-    private static void getWeather(Double lati, Double longi) {
-
-        RequestQueue queue = Volley.newRequestQueue(context);
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK + "&lat=" + lati + "&lon=" + longi +"&units=metric"+"&lang=he", null, new Response.Listener<JSONObject>() {
-
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    //JSONObject rootObject = new JSONObject(response);
-                    JSONObject cityObject = response.getJSONObject("city");
-                    city = cityObject.getString("name");
-
-                    //cityTv = cityTv.findViewById(R.id.weather_title_tv);
-                    //cityTv.setText("מזג האוויר ב"+city);
-
-                    //JSONObject listObject = response.getJSONObject("list");
-                    JSONArray listArray = response.getJSONArray("list");
-                    int i;
-                    for(i=0; i<listArray.length();i++){
-                        JSONObject currentElementObject = listArray.getJSONObject(i);
-                        String dateAndTime = currentElementObject.getString("dt_txt");
-                        String date = dateAndTime.substring(8,10)+"."+dateAndTime.substring(5,7);
-                        if(date.substring(3,4).equals("0")){
-                            date = date.substring(0,3)+date.substring(4,5);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-
-                        String time = dateAndTime.substring(11,16);
-
-                        JSONObject mainObject = currentElementObject.getJSONObject("main");
-                        Double cel = Double.parseDouble(mainObject.getString("temp"));
-                        String celsius = "\u2103"+cel;
-
-                        JSONObject weatherObject = currentElementObject.getJSONArray("weather").getJSONObject(0);
-                        String description = weatherObject.getString("description");
-
-                        String icon = BASE_URL_IMG+weatherObject.getString("icon")+".png";
-
-                        String year = dateAndTime.substring(0,4);
-                        String day = dateAndTime.substring(8,10);
-                        String month = dateAndTime.substring(5,7);
-
-                        String dayFromDate = Day.getDayFromDate(day, month, year);
-
-                        Weather weather = new Weather(dayFromDate, date, time, celsius, description, icon);
-                        weatherList.add(weather);
-                        //weatherAdapter.notifyItemInserted(i);
+                        weatherAdapter.notifyDataSetChanged();
                     }
-
-                    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-                    SharedPreferences.Editor prefEditor = sp.edit();
-                    prefEditor.putString("city_weather", city);
-                    prefEditor.commit();
-
-                    //weatheradapter.notifyItemInserted(i-1);
-
-                    lastWeather = weatherList.get(0);
-
-                    weatherAdapter.notifyDataSetChanged();
-
-                    //weatherList = new ArrayList<Weather>();
-                    //String imageUri = "drawable://" + R.drawable.ic_launcher_background;
-                    //weatherList.add(new Weather("א'", "14.5", "3:00", 25.0, 45.0, imageUri));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
             }
         });
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
         queue.add(request);
-        queue.start();
     }
-
-    public static Weather getLastWeather(){
-        return lastWeather;
-    }
-
-    public static String getLastLocation(){
-        return city;
-    }
-
 }

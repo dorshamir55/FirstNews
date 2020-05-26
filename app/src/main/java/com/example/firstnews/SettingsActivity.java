@@ -72,7 +72,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     break;
                 case "2":
                     //1 hour
-                    time = 60 * 60;
+                    time = 10;
                     break;
             }
             Calendar calendar = Calendar.getInstance();

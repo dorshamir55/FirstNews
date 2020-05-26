@@ -5,6 +5,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,16 +18,24 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +45,11 @@ public class MainActivity extends AppCompatActivity {
     final String NEWS_FRAGMENT="news_fragment";
     final String WEATHER_FRAGMENT="weather_fragment";
     AlarmManager alarmManager;
+
+
+    private FragmentTransaction transaction;
+    private FragmentManager fragmentManager;
+
 
     Menu tempMenu;
     MenuItem permission;
@@ -45,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar;
-        toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        toolbar = findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
@@ -60,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setCustomView(textView);
         //Intent intent = new Intent(this, BackgroundNotificationService.class);
-        NewsFragment newsFragment = NewsFragment.getInstance(this);
+        // NewsFragment newsFragment = NewsFragment.getInstance(this);
         /*new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -69,54 +85,60 @@ public class MainActivity extends AppCompatActivity {
         }, 1000);*/
 
 
-        WeatherFragment weatherFragment = WeatherFragment.getInstance(this);
+//        WeatherFragment weatherFragment = WeatherFragment.getInstance(this);
         //WeatherFragment.startLocationAndWeather();
         //SystemClock.sleep(500);
 
 
-        getFragmentManager().beginTransaction().add(R.id.frame_container2, newsFragment, NEWS_FRAGMENT).commit();
+//        getFragmentManager().beginTransaction().add(R.id.frame_container2, new NewsFragment(), NEWS_FRAGMENT).commit();
+//        setSportTitle();
+
+        fragmentManager = getSupportFragmentManager();
+        transaction = fragmentManager.beginTransaction();
+        transaction.add(R.id.frame_container2, new NewsFragment(), NEWS_FRAGMENT).commit();
         setSportTitle();
 
         //final Intent intent = new Intent(MainActivity.this, NotificationService.class);
         //startService(intent);
 
         if(Build.VERSION.SDK_INT>=23){
-            int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
+            int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
             if(hasLocationPermission != getPackageManager().PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST);
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST);
             }
             else {
-                getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
+                weatherFunction();
                 setCity();
+//                getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
             }
         }
         else {
-            getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
+            weatherFunction();
             setCity();
+//            getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
         }
     }
 
     public void setCity(){
-        new Handler().post(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 TextView textView = findViewById(R.id.weather_title_tv);
                 textView.setText("מזג האוויר ב"+sp.getString("city_weather", "מיקומך"));
             }
-        });
+        },1000);
     }
 
     public void setSportTitle(){
-        new Handler().post(new Runnable() {
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
                 TextView textView = findViewById(R.id.news_title_tv);
                 textView.setText(R.string.sport_title);
-                //textView.setText(sp.getString("sport", "חדשות הספורט"));
             }
-        });
+        },1000);
     }
 
     @Override
@@ -137,19 +159,41 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);*/
 
             if(Build.VERSION.SDK_INT>=23){
-                int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION);
+                int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
                 if(hasLocationPermission != getPackageManager().PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                    requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                 }
             }
         }
         else if (item.getItemId()==R.id.icon_refresh) {
-            WeatherFragment weatherFragment = WeatherFragment.getInstance(MainActivity.this);
-            NewsFragment newsFragment = NewsFragment.getInstance(MainActivity.this);
-            //FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            //WeatherFragment.startLocationAndWeather();
+            Fragment weatherfragment = getSupportFragmentManager().findFragmentByTag(WEATHER_FRAGMENT);
+            Fragment newsfragment = getSupportFragmentManager().findFragmentByTag(NEWS_FRAGMENT);
 
-            //getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT);
+            if(newsfragment==null){
+                fragmentManager = getSupportFragmentManager();
+                transaction = fragmentManager.beginTransaction();
+                transaction.add(R.id.frame_container2, new NewsFragment(), NEWS_FRAGMENT).commit();
+                setSportTitle();
+            }
+            else{
+                fragmentManager = getSupportFragmentManager();
+                transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.frame_container2, new NewsFragment(), NEWS_FRAGMENT).commit();
+                setSportTitle();
+            }
+
+            if(Build.VERSION.SDK_INT>=23) {
+                int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+                if(hasLocationPermission == getPackageManager().PERMISSION_GRANTED) {
+                    if (weatherfragment == null) {
+                        weatherFunction();
+                        setCity();
+                    } else {
+                        weatherFunctionReplace();
+                        setCity();
+                    }
+                }
+            }
 
         }
         else if(item.getItemId()==R.id.action_notifications){
@@ -186,12 +230,77 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }).setCancelable(false).show();
             }
-            else {
-                WeatherFragment weatherFragment = WeatherFragment.getInstance(this);
-
-                getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
+            else{
+                weatherFunction();
                 setCity();
+
+//                WeatherFragment weatherFragment = WeatherFragment.getInstance(this);
+//
+//                getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
+//                setCity();
             }
         }
+    }
+
+    private void weatherFunction() {
+        Log.d("tag", "weatherFuncation");
+
+        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+        Log.d("tag", "1");
+        LocationCallback callback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                Log.d("tag", "Before super method");
+                super.onLocationResult(locationResult);
+                Log.d("tag", "onLocationResult");
+                Location lastLocation = locationResult.getLastLocation();
+                Log.d("tag", "lastLocation");
+                SharedPreferences sp = android.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("latitude", String.valueOf(lastLocation.getLatitude()));
+                editor.putString("longitude", String.valueOf(lastLocation.getLongitude()));
+                editor.apply();
+                Log.d("tag", "Before FragmentManager");
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.add(R.id.frame_container1, new WeatherFragment(), WEATHER_FRAGMENT).commit();
+            }
+        };
+        LocationRequest request = LocationRequest.create();
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        request.setNumUpdates(1);
+        client.requestLocationUpdates(request, callback, null);
+
+    }
+
+    private void weatherFunctionReplace(){
+        Log.d("tag", "weatherFuncationReplace");
+
+        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+        Log.d("tag", "1");
+        LocationCallback callback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                Log.d("tag", "Before super method");
+                super.onLocationResult(locationResult);
+                Log.d("tag", "onLocationResult");
+                Location lastLocation = locationResult.getLastLocation();
+                Log.d("tag", "lastLocation");
+                SharedPreferences sp = android.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putString("latitude", String.valueOf(lastLocation.getLatitude()));
+                editor.putString("longitude", String.valueOf(lastLocation.getLongitude()));
+                editor.apply();
+                Log.d("tag", "Before FragmentManager");
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.frame_container1, new WeatherFragment(), WEATHER_FRAGMENT).commit();
+            }
+        };
+        LocationRequest request = LocationRequest.create();
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        request.setNumUpdates(1);
+        client.requestLocationUpdates(request, callback, null);
+
     }
 }

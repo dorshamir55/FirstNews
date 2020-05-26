@@ -1,5 +1,6 @@
 package com.example.firstnews;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,41 +14,44 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.WeatherViewHolder> {
+public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHolder> {
     private List<Weather> weatherList;
+    private final Context context;
 
-    public WeatherAdapter(List<Weather> weatherList) {
+
+    public WeatherAdapter(Context context, List<Weather> weatherList) {
+        this.context = context;
         this.weatherList = weatherList;
     }
 
-    static class WeatherViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder{
+
         TextView timeTv;
         ImageView imageIv;
         TextView celsiusTv;
         TextView descriptionTv;
         TextView dayTv;
         TextView dateTv;
-
-        WeatherViewHolder(View v){
-            super(v);
-            timeTv = (TextView)v.findViewById(R.id.weather_time_tv);
-            imageIv = (ImageView)v.findViewById(R.id.weather_image_iv);
-            celsiusTv = (TextView)v.findViewById(R.id.weather_celsius_tv);
-            descriptionTv = (TextView)v.findViewById(R.id.weather_description_tv);
-            dayTv = (TextView)v.findViewById(R.id.weather_day_tv);
-            dateTv = (TextView)v.findViewById(R.id.weather_date_tv);
+        ViewHolder(View itemView){
+            super(itemView);
+            timeTv = itemView.findViewById(R.id.weather_time_tv);
+            imageIv = itemView.findViewById(R.id.weather_image_iv);
+            celsiusTv = itemView.findViewById(R.id.weather_celsius_tv);
+            descriptionTv = itemView.findViewById(R.id.weather_description_tv);
+            dayTv = itemView.findViewById(R.id.weather_day_tv);
+            dateTv = itemView.findViewById(R.id.weather_date_tv);
         }
     }
 
     @NonNull
     @Override
-    public WeatherViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.weather_cell, parent, false);
-        return new WeatherViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull WeatherViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Weather weather = weatherList.get(position);
         holder.timeTv.setText(weather.getTime());
         Picasso.get().load(weather.getImage()).resize(300,300).into(holder.imageIv);
