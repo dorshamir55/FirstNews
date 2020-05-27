@@ -73,7 +73,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         Intent openIntent = new Intent(context, MainActivity.class);
         PendingIntent openPendingIntent = PendingIntent.getActivity(context, OPEN_PENDING_ID, openIntent, PendingIntent.FLAG_UPDATE_CURRENT );
 
-        Toast.makeText(context, "onReceive", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, "onReceive", Toast.LENGTH_SHORT).show();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         String choiceTime = sp.getString("notification_time", "0");
         String choiceKind = sp.getString("notification_kind", "0");
