@@ -105,11 +105,11 @@ public class NotificationReceiver extends BroadcastReceiver {
                 break;
             case "1":
                 //30 min
-                time = 30*60;
+                time = 30 * 60;
                 break;
             case "2":
                 //1 hour
-                time = 10 ;
+                time = 60 * 60;
                 break;
         }
 

@@ -37,13 +37,17 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.ArrayList;
+
+import static com.example.firstnews.WeatherFragment.context;
+
 public class MainActivity extends AppCompatActivity {
 
     final int LOCATION_PERMISSION_REQUEST = 1;
     final int SETTINGS_REQUEST = 2;
     final int PENDING_ID = 5;
-    final String NEWS_FRAGMENT="news_fragment";
-    final String WEATHER_FRAGMENT="weather_fragment";
+    final String NEWS_FRAGMENT = "news_fragment";
+    final String WEATHER_FRAGMENT = "weather_fragment";
     AlarmManager alarmManager;
 
 
@@ -51,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
 
 
-    Menu tempMenu;
-    MenuItem permission;
+    //Menu tempMenu;
+    //MenuItem permission;
 
     //List<Weather> weatherList = new ArrayList<Weather>();
     @Override
@@ -75,62 +79,47 @@ public class MainActivity extends AppCompatActivity {
         textView.setTextColor(getResources().getColor(R.color.colorRed));
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setCustomView(textView);
-        //Intent intent = new Intent(this, BackgroundNotificationService.class);
-        // NewsFragment newsFragment = NewsFragment.getInstance(this);
-        /*new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                NewsFragment.getNews();
-            }
-        }, 1000);*/
 
-
-//        WeatherFragment weatherFragment = WeatherFragment.getInstance(this);
-        //WeatherFragment.startLocationAndWeather();
-        //SystemClock.sleep(500);
-
-
-//        getFragmentManager().beginTransaction().add(R.id.frame_container2, new NewsFragment(), NEWS_FRAGMENT).commit();
-//        setSportTitle();
 
         fragmentManager = getSupportFragmentManager();
         transaction = fragmentManager.beginTransaction();
-        transaction.add(R.id.frame_container2, new NewsFragment(), NEWS_FRAGMENT).commit();
+        transaction.add(R.id.frame_container2, new NewsFragment(), NEWS_FRAGMENT)
+                .add(R.id.frame_container1, new WeatherFragment(), WEATHER_FRAGMENT).commit();
+
         setSportTitle();
-
-        //final Intent intent = new Intent(MainActivity.this, NotificationService.class);
-        //startService(intent);
-
-        if(Build.VERSION.SDK_INT>=23){
+        if (Build.VERSION.SDK_INT >= 23) {
             int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
-            if(hasLocationPermission != getPackageManager().PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST);
-            }
-            else {
-                weatherFunction();
+            if (hasLocationPermission != getPackageManager().PERMISSION_GRANTED) {
+                setNotAvailable();
+            } else {
                 setCity();
-//                getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
             }
-        }
-        else {
-            weatherFunction();
-            setCity();
-//            getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
         }
     }
 
-    public void setCity(){
+
+    public void setCity() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 TextView textView = findViewById(R.id.weather_title_tv);
-                textView.setText("מזג האוויר ב"+sp.getString("city_weather", "מיקומך"));
+                textView.setText("מזג האוויר ב" + sp.getString("city_weather", "מיקומך"));
             }
-        },1000);
+        }, 1000);
     }
 
-    public void setSportTitle(){
+    public void setNotAvailable() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                TextView textView = findViewById(R.id.weather_title_tv);
+                textView.setText(R.string.weather_not_available);
+            }
+        }, 1000);
+    }
+
+    public void setSportTitle() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -138,65 +127,67 @@ public class MainActivity extends AppCompatActivity {
                 TextView textView = findViewById(R.id.news_title_tv);
                 textView.setText(R.string.sport_title);
             }
-        },1000);
+        }, 1000);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        tempMenu = menu;
+        WeatherFragment.tempMenu = menu;
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId()==R.id.permission_location_settings){
+        if (item.getItemId() == R.id.permission_location_settings) {
 
             /*Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
             intent.setData(Uri.parse("package:"+getPackageName()));
             startActivity(intent);*/
 
-            if(Build.VERSION.SDK_INT>=23){
+            if (Build.VERSION.SDK_INT >= 23) {
                 int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
-                if(hasLocationPermission != getPackageManager().PERMISSION_GRANTED) {
+                if (hasLocationPermission != getPackageManager().PERMISSION_GRANTED) {
                     requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                 }
             }
-        }
-        else if (item.getItemId()==R.id.icon_refresh) {
+        } else if (item.getItemId() == R.id.icon_refresh) {
             Fragment weatherfragment = getSupportFragmentManager().findFragmentByTag(WEATHER_FRAGMENT);
             Fragment newsfragment = getSupportFragmentManager().findFragmentByTag(NEWS_FRAGMENT);
 
-            if(newsfragment==null){
+            if (newsfragment == null) {
                 fragmentManager = getSupportFragmentManager();
                 transaction = fragmentManager.beginTransaction();
                 transaction.add(R.id.frame_container2, new NewsFragment(), NEWS_FRAGMENT).commit();
                 setSportTitle();
-            }
-            else{
+            } else {
                 fragmentManager = getSupportFragmentManager();
                 transaction = fragmentManager.beginTransaction();
                 transaction.replace(R.id.frame_container2, new NewsFragment(), NEWS_FRAGMENT).commit();
                 setSportTitle();
             }
 
-            if(Build.VERSION.SDK_INT>=23) {
+            if (Build.VERSION.SDK_INT >= 23) {
                 int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
-                if(hasLocationPermission == getPackageManager().PERMISSION_GRANTED) {
+                if (hasLocationPermission == getPackageManager().PERMISSION_GRANTED) {
                     if (weatherfragment == null) {
-                        weatherFunction();
+                        fragmentManager = getSupportFragmentManager();
+                        transaction = fragmentManager.beginTransaction();
+                        transaction.add(R.id.frame_container1, new WeatherFragment(), WEATHER_FRAGMENT).commit();
+                        WeatherFragment.startLocation();
                         setCity();
                     } else {
-                        weatherFunctionReplace();
+                        fragmentManager = getSupportFragmentManager();
+                        transaction = fragmentManager.beginTransaction();
+                        transaction.replace(R.id.frame_container1, new WeatherFragment(), WEATHER_FRAGMENT).commit();
+                        //WeatherFragment.startLocation();
                         setCity();
                     }
                 }
             }
 
-        }
-        else if(item.getItemId()==R.id.action_notifications){
+        } else if (item.getItemId() == R.id.action_notifications) {
             startActivity(new Intent(this, SettingsActivity.class));
         }
         return super.onOptionsItemSelected(item);
@@ -205,15 +196,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(requestCode == LOCATION_PERMISSION_REQUEST){
-            if(grantResults[0] != PackageManager.PERMISSION_GRANTED){
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(R.string.permission_title).setMessage(R.string.permission_msg)
                         .setPositiveButton(R.string.location_settings, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                intent.setData(Uri.parse("package:"+getPackageName()));
+                                intent.setData(Uri.parse("package:" + getPackageName()));
                                 startActivity(intent);
 
                             }
@@ -222,85 +214,104 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                permission = tempMenu.findItem(R.id.permission_location_settings);
-                                permission.setVisible(true);
+                                WeatherFragment.permission = WeatherFragment.tempMenu.findItem(R.id.permission_location_settings);
+                                WeatherFragment.permission.setVisible(true);
 
                                 //getFragmentManager().beginTransaction().add(R.id.frame_container1, WeatherFragment.getInstance(this), "weather_fragment").commit();
 
                             }
                         }).setCancelable(false).show();
-            }
-            else{
-                weatherFunction();
-                setCity();
+            } else {
+                WeatherFragment.permission = WeatherFragment.tempMenu.findItem(R.id.permission_location_settings);
+                WeatherFragment.permission.setVisible(false);
+                if (Build.VERSION.SDK_INT >= 23) {
+                    Fragment weatherfragment = getSupportFragmentManager().findFragmentByTag(WEATHER_FRAGMENT);
+                    int hasLocationPermission = checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+                    if (hasLocationPermission == getPackageManager().PERMISSION_GRANTED) {
+                        if (weatherfragment == null) {
+                            fragmentManager = getSupportFragmentManager();
+                            transaction = fragmentManager.beginTransaction();
+                            transaction.add(R.id.frame_container1, new WeatherFragment(), WEATHER_FRAGMENT).commit();
+                            WeatherFragment.startLocation();
+                            setCity();
+                        } else {
+                            fragmentManager = getSupportFragmentManager();
+                            transaction = fragmentManager.beginTransaction();
+                            transaction.replace(R.id.frame_container1, new WeatherFragment(), WEATHER_FRAGMENT).commit();
+                            //WeatherFragment.startLocation();
+                            setCity();
+                        }
 
-//                WeatherFragment weatherFragment = WeatherFragment.getInstance(this);
-//
-//                getFragmentManager().beginTransaction().add(R.id.frame_container1, weatherFragment, WEATHER_FRAGMENT).commit();
-//                setCity();
+                    }
+                }
             }
         }
     }
 
-    private void weatherFunction() {
-        Log.d("tag", "weatherFuncation");
-
-        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-        Log.d("tag", "1");
-        LocationCallback callback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                Log.d("tag", "Before super method");
-                super.onLocationResult(locationResult);
-                Log.d("tag", "onLocationResult");
-                Location lastLocation = locationResult.getLastLocation();
-                Log.d("tag", "lastLocation");
-                SharedPreferences sp = android.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("latitude", String.valueOf(lastLocation.getLatitude()));
-                editor.putString("longitude", String.valueOf(lastLocation.getLongitude()));
-                editor.apply();
-                Log.d("tag", "Before FragmentManager");
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.add(R.id.frame_container1, new WeatherFragment(), WEATHER_FRAGMENT).commit();
-            }
-        };
-        LocationRequest request = LocationRequest.create();
-        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        request.setNumUpdates(1);
-        client.requestLocationUpdates(request, callback, null);
-
-    }
-
-    private void weatherFunctionReplace(){
-        Log.d("tag", "weatherFuncationReplace");
-
-        FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-        Log.d("tag", "1");
-        LocationCallback callback = new LocationCallback() {
-            @Override
-            public void onLocationResult(LocationResult locationResult) {
-                Log.d("tag", "Before super method");
-                super.onLocationResult(locationResult);
-                Log.d("tag", "onLocationResult");
-                Location lastLocation = locationResult.getLastLocation();
-                Log.d("tag", "lastLocation");
-                SharedPreferences sp = android.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-                SharedPreferences.Editor editor = sp.edit();
-                editor.putString("latitude", String.valueOf(lastLocation.getLatitude()));
-                editor.putString("longitude", String.valueOf(lastLocation.getLongitude()));
-                editor.apply();
-                Log.d("tag", "Before FragmentManager");
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.frame_container1, new WeatherFragment(), WEATHER_FRAGMENT).commit();
-            }
-        };
-        LocationRequest request = LocationRequest.create();
-        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        request.setNumUpdates(1);
-        client.requestLocationUpdates(request, callback, null);
-
-    }
 }
+
+
+
+        /*private void weatherFunction() {
+            Log.d("tag", "weatherFuncation");
+
+            FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+            Log.d("tag", "1");
+            LocationCallback callback = new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    Log.d("tag", "Before super method");
+                    super.onLocationResult(locationResult);
+                    Log.d("tag", "onLocationResult");
+                    Location lastLocation = locationResult.getLastLocation();
+                    Log.d("tag", "lastLocation");
+                    SharedPreferences sp = android.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("latitude", String.valueOf(lastLocation.getLatitude()));
+                    editor.putString("longitude", String.valueOf(lastLocation.getLongitude()));
+                    editor.apply();
+                    Log.d("tag", "Before FragmentManager");
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    transaction.add(R.id.frame_container1, new WeatherFragment(), WEATHER_FRAGMENT).commit();
+                }
+            };
+            LocationRequest request = LocationRequest.create();
+            request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            request.setNumUpdates(1);
+            client.requestLocationUpdates(request, callback, null);
+
+        }
+
+        private void weatherFunctionReplace(){
+            Log.d("tag", "weatherFuncationReplace");
+
+            FusedLocationProviderClient client = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+            Log.d("tag", "1");
+            LocationCallback callback = new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    Log.d("tag", "Before super method");
+                    super.onLocationResult(locationResult);
+                    Log.d("tag", "onLocationResult");
+                    Location lastLocation = locationResult.getLastLocation();
+                    Log.d("tag", "lastLocation");
+                    SharedPreferences sp = android.preference.PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                    SharedPreferences.Editor editor = sp.edit();
+                    editor.putString("latitude", String.valueOf(lastLocation.getLatitude()));
+                    editor.putString("longitude", String.valueOf(lastLocation.getLongitude()));
+                    editor.apply();
+                    Log.d("tag", "Before FragmentManager");
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    transaction.replace(R.id.frame_container1, new WeatherFragment(), WEATHER_FRAGMENT).commit();
+                }
+            };
+            LocationRequest request = LocationRequest.create();
+            request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            request.setNumUpdates(1);
+            client.requestLocationUpdates(request, callback, null);
+
+        }
+    }
+}*/

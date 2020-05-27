@@ -47,6 +47,7 @@ import java.util.List;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 import static com.example.firstnews.WeatherFragment.context;
+import static com.example.firstnews.WeatherFragment.weatherAdapter;
 
 public class NewsFragment extends Fragment {
     private List<News> newsList;
@@ -70,8 +71,8 @@ public class NewsFragment extends Fragment {
 
         newsAdapter.setListener(new NewsAdapter.MyNewsListener() {
             @Override
-            public void onNewsClicked(int position, View view, String url) {
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            public void onNewsClicked(int position, View view){
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(newsList.get(position).getWebUrl()));
                 startActivity(browserIntent);
             }
         });

@@ -22,7 +22,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
     private MyNewsListener listener;
 
     interface MyNewsListener {
-        void onNewsClicked(int position, View view, String url);
+        void onNewsClicked(int position, View view);
     }
 
     public void setListener(MyNewsListener listener) {
@@ -46,7 +46,15 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
             descriptionTv = itemView.findViewById(R.id.news_description_tv);
             imageIv = itemView.findViewById(R.id.news_image_iv);
             dateTv = itemView.findViewById(R.id.news_date_tv);
-
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener!=null) {
+                        Log.d("tag", "holder.itemView clicked");
+                        listener.onNewsClicked(getAdapterPosition(), v);
+                    }
+                }
+            });
         }
     }
 
@@ -64,14 +72,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ViewHolder> {
         Picasso.get().load(news.getImage()).resize(400,275).into(holder.imageIv);
         holder.descriptionTv.setText(news.getDescription());
         holder.dateTv.setText(news.getDate());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(listener!=null)
-                    Log.d("tag", "holder.itemView clicked");
-                //   listener.onNewsClicked(position, v, holder.url);
-            }
-        });
+
     }
 
     @Override

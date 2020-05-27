@@ -10,7 +10,7 @@
     <string name="notifications_settings">Notifications settings</string>
     <string name="notifications_settings_title_time">Time frequency</string>
     <string name="notifications_settings_summary_time">Select the frequency of time when the notification appears\\nSelect notification - News/Weather</string>
-    <string name="one_minute">Select the frequency of time when the notification appears</string>
+    <string name="one_minute">60 seconds</string>
     <string name="half_hour">30 minutes</string>
     <string name="one_hour">1 hour</string>
     <string name="never">Never</string>
