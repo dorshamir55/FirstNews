@@ -160,7 +160,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                     @Override
                     public void run() {
                         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-                        notification = builder.setContentTitle("מזג האוויר ב"+sp.getString("במיקומך", "מיקומך"))
+                        notification = builder.setContentTitle("מזג האוויר ב"+sp.getString("city_weather", "מיקומך"))
                                 .setContentText(sp.getString("description_weather", "שמיים בהירים")+" "+sp.getString("celsius_weather", "26.79"))
                                 .setAutoCancel(true).setSmallIcon(R.drawable.news_icon).build();
                         notification.defaults = Notification.DEFAULT_VIBRATE|Notification.DEFAULT_LIGHTS;
