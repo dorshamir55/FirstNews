@@ -9,7 +9,7 @@
     <string name="loading">Loading...</string>
     <string name="notifications_settings">Notifications settings</string>
     <string name="notifications_settings_title_time">Time frequency</string>
-    <string name="notifications_settings_summary_time">Select the frequency of time when the notification appears\\nSelect notification - News/Weather</string>
+    <string name="notifications_settings_summary_time">Select the frequency of time when the notification appears</string>
     <string name="one_minute">60 seconds</string>
     <string name="half_hour">30 minutes</string>
     <string name="one_hour">1 hour</string>
@@ -46,6 +46,9 @@
     <string name="notification_cancel">Notification cancelled</string>
     <string name="permission_msg">In order to watch the weather forecast you must confirm location permissions</string>
     <string name="weather_not_available">Weather not available!</string>
+    <string name="assert_message_kind">Select kind of notification</string>
+    <string name="assert_message_time">Select the frequency of time when the notification appears</string>
+    <string name="assert_message_both">Select kind of notification and the frequency of time when the notification appears</string>
 
 
 </resources>

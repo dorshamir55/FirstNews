@@ -25,4 +25,7 @@
     <string name="notification_active">התראה הופעלה</string>
     <string name="notification_cancel">התראה בוטלה</string>
     <string name="weather_not_available">מזג האוויר לא זמין!</string>
+    <string name="assert_message_kind">בחר את סוג ההתראה</string>
+    <string name="assert_message_time">בחר את תדירות הזמן</string>
+    <string name="assert_message_both">בחר את תדירות הזמן ההתראה ואת סוג ההתראה</string>
 </resources>
