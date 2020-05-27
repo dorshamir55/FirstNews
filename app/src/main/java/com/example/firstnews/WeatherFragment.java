@@ -57,8 +57,8 @@ public class WeatherFragment extends Fragment {
     private String lat;
     private String lon;
 
-    static final String BASE_LINK = "http://api.openweathermap.org/data/2.5/forecast?appid=2f976482fabfb93ba421d2df01470e6c";
-    static final String BASE_URL_IMG = "http://openweathermap.org/img/w/";
+    static final String BASE_LINK = "https://api.openweathermap.org/data/2.5/forecast?appid=2f976482fabfb93ba421d2df01470e6c";
+    static final String BASE_URL_IMG = "https://openweathermap.org/img/w/";
 
     @Nullable
     @Override
