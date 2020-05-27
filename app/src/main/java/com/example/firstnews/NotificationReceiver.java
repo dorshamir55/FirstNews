@@ -286,8 +286,8 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     public static void getLastWeather(String lati, String longi, final Context context) {
-        final String BASE_LINK = "http://api.openweathermap.org/data/2.5/forecast?appid=2f976482fabfb93ba421d2df01470e6c";
-        final String BASE_URL_IMG = "http://openweathermap.org/img/w/";
+        final String BASE_LINK = "https://api.openweathermap.org/data/2.5/forecast?appid=2f976482fabfb93ba421d2df01470e6c";
+        final String BASE_URL_IMG = "https://openweathermap.org/img/w/";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, BASE_LINK + "&lat=" + lati + "&lon=" + longi +"&units=metric"+"&lang=he", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
