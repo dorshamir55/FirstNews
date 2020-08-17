@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FirstNews</string>
+    <string name="app_name">First news</string>
     <string name="main_title">First news</string>
     <string name="sport_title">Sport news</string>
     <string name="weather_title">Weather</string>

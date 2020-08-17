@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FirstNews</string>
+    <string name="app_name">הראשון בחדשות</string>
     <string name="main_title">הראשון בחדשות</string>
     <string name="sport_title">חדשות הספורט</string>
     <string name="weather_title">מזג אוויר</string>
